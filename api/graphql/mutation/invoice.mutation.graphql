@@ -1,0 +1,32 @@
+extend type Mutation {
+    invoiceMutations: InvoiceMutations!
+}
+
+type InvoiceMutations {
+    createInvoice: CreateInvoicePayload!
+    updateInvoice(input: UpdateInvoiceInput!): UpdateInvoicePayload!
+    checkInvoice(input: CheckInvoiceInput!): CheckInvoicePayload!
+}
+
+type CreateInvoicePayload {
+    id: String!
+}
+
+input UpdateInvoiceInput {
+    id: String!
+    amount: Float!
+    chain: String!
+    token: String!
+}
+
+type UpdateInvoicePayload {
+    invoice: Invoice!
+}
+
+input CheckInvoiceInput {
+    id: String!
+}
+
+type CheckInvoicePayload {
+    invoice: Invoice!
+}

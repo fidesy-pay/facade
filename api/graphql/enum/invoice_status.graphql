@@ -1,0 +1,7 @@
+enum InvoiceStatus {
+  UNKNOWN_STATUS
+  NEW
+  PENDING
+  FAILED
+  SUCCESS
+}
