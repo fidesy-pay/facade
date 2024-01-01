@@ -19,8 +19,10 @@ func New(
 	}
 }
 
-func (s *Service) CreateInvoice(ctx context.Context) (string, error) {
-	invoiceResp, err := s.invoicesClient.CreateInvoice(ctx, &desc.CreateInvoiceRequest{})
+func (s *Service) CreateInvoice(ctx context.Context, clientID string) (string, error) {
+	invoiceResp, err := s.invoicesClient.CreateInvoice(ctx, &desc.CreateInvoiceRequest{
+		ClientId: clientID,
+	})
 	if err != nil {
 		return "", fmt.Errorf("invoicesClient.CreateInvoice: %w", err)
 	}
@@ -51,4 +53,29 @@ func (s *Service) CheckInvoice(ctx context.Context, input model.CheckInvoiceInpu
 	}
 
 	return invoiceResp.GetInvoice(), nil
+}
+
+type ListInvoicesFilter struct {
+	IDIn       []string
+	ClientIDIn []string
+}
+
+func (s *Service) ListInvoices(ctx context.Context, filter ListInvoicesFilter) ([]*desc.Invoice, error) {
+	reqFilter := &desc.ListInvoicesRequest_Filter{}
+	if len(filter.IDIn) > 0 {
+		reqFilter.IdIn = filter.IDIn
+	}
+
+	if len(filter.ClientIDIn) > 0 {
+		reqFilter.ClientIdIn = filter.ClientIDIn
+	}
+
+	invoicesResp, err := s.invoicesClient.ListInvoices(ctx, &desc.ListInvoicesRequest{
+		Filter: reqFilter,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("invoicesClient.ListInvoices: %w", err)
+	}
+
+	return invoicesResp.GetInvoices(), nil
 }

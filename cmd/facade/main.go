@@ -5,11 +5,14 @@ import (
 	graphqlServerHandler "github.com/99designs/gqlgen/graphql/handler"
 	"github.com/fidesy-pay/facade/internal/app/graph"
 	"github.com/fidesy-pay/facade/internal/app/graph/generated"
+	"github.com/fidesy-pay/facade/internal/app/restapi"
 	"github.com/fidesy-pay/facade/internal/pkg/middleware/auth"
 	"github.com/fidesy-pay/facade/internal/pkg/sandbox"
 	authservice "github.com/fidesy-pay/facade/internal/pkg/services/auth-service"
 	invoicesservice "github.com/fidesy-pay/facade/internal/pkg/services/invoices-service"
 	auth_service "github.com/fidesy-pay/facade/pkg/auth-service"
+	clients_service "github.com/fidesy-pay/facade/pkg/clients-service"
+	crypto_service "github.com/fidesy-pay/facade/pkg/crypto-service"
 	invoices_service "github.com/fidesy-pay/facade/pkg/invoices-service"
 	"github.com/fidesyx/platform/pkg/scratch"
 	"github.com/go-chi/chi"
@@ -61,11 +64,31 @@ func main() {
 		log.Fatalf("NewInvoicesClient: %v", err)
 	}
 
+	clientsClient, err := scratch.NewClient[clients_service.ClientsServiceClient](
+		ctx,
+		clients_service.NewClientsServiceClient,
+		"clients-service",
+	)
+	if err != nil {
+		log.Fatalf("NewClientsClient: %v", err)
+	}
+
+	cryptoServiceClient, err := scratch.NewClient[crypto_service.CryptoServiceClient](
+		ctx,
+		crypto_service.NewCryptoServiceClient,
+		"crypto-service",
+	)
+	if err != nil {
+		log.Fatalf("NewCryptoClient: %v", err)
+	}
+
 	// services
-	authService := authservice.New(authClient)
+	authService := authservice.New(authClient, clientsClient)
 	invoicesService := invoicesservice.New(invoicesClient)
 
 	resolver := graph.NewResolver(
+		clientsClient,
+		cryptoServiceClient,
 		authService,
 		invoicesService,
 	)
@@ -73,15 +96,16 @@ func main() {
 	schema := generated.NewExecutableSchema(generated.Config{
 		Resolvers: resolver,
 	})
-
 	router := chi.NewRouter()
 	router.Use(cors.New(cors.Options{
-		AllowedOrigins: []string{"*"},
-		//AllowedHeaders:   []string{"*"},
+		AllowedOrigins:   []string{"*"},
+		AllowedHeaders:   []string{"*"},
 		AllowCredentials: true,
 		//Debug:            true,
 	}).Handler)
 	router.Use(auth.Auth(authClient))
+
+	restapi.New(router, clientsClient, invoicesService)
 
 	graphqlServer := graphqlServerHandler.NewDefaultServer(schema)
 	//graphqlServer.AroundResponses(authMiddleware)

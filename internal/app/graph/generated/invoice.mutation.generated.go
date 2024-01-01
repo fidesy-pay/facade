@@ -18,7 +18,7 @@ import (
 // region    ************************** generated!.gotpl **************************
 
 type InvoiceMutationsResolver interface {
-	CreateInvoice(ctx context.Context, obj *model.InvoiceMutations) (*model.CreateInvoicePayload, error)
+	CreateInvoice(ctx context.Context, obj *model.InvoiceMutations, input model.CreateInvoiceInput) (*model.CreateInvoicePayload, error)
 	UpdateInvoice(ctx context.Context, obj *model.InvoiceMutations, input model.UpdateInvoiceInput) (*model.UpdateInvoicePayload, error)
 	CheckInvoice(ctx context.Context, obj *model.InvoiceMutations, input model.CheckInvoiceInput) (*model.CheckInvoicePayload, error)
 }
@@ -34,6 +34,21 @@ func (ec *executionContext) field_InvoiceMutations_checkInvoice_args(ctx context
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNCheckInvoiceInput2githubᚗcomᚋfidesyᚑpayᚋfacadeᚋinternalᚋpkgᚋmodelᚐCheckInvoiceInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_InvoiceMutations_createInvoice_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.CreateInvoiceInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNCreateInvoiceInput2githubᚗcomᚋfidesyᚑpayᚋfacadeᚋinternalᚋpkgᚋmodelᚐCreateInvoiceInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -183,7 +198,7 @@ func (ec *executionContext) _InvoiceMutations_createInvoice(ctx context.Context,
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.InvoiceMutations().CreateInvoice(rctx, obj)
+		return ec.resolvers.InvoiceMutations().CreateInvoice(rctx, obj, fc.Args["input"].(model.CreateInvoiceInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -213,6 +228,17 @@ func (ec *executionContext) fieldContext_InvoiceMutations_createInvoice(ctx cont
 			}
 			return nil, fmt.Errorf("no field named %q was found under type CreateInvoicePayload", field.Name)
 		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_InvoiceMutations_createInvoice_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
 	}
 	return fc, nil
 }
@@ -422,6 +448,35 @@ func (ec *executionContext) unmarshalInputCheckInvoiceInput(ctx context.Context,
 				return it, err
 			}
 			it.ID = data
+		}
+	}
+
+	return it, nil
+}
+
+func (ec *executionContext) unmarshalInputCreateInvoiceInput(ctx context.Context, obj interface{}) (model.CreateInvoiceInput, error) {
+	var it model.CreateInvoiceInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"client_id"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "client_id":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("client_id"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ClientID = data
 		}
 	}
 
@@ -772,6 +827,11 @@ func (ec *executionContext) marshalNCheckInvoicePayload2ᚖgithubᚗcomᚋfidesy
 		return graphql.Null
 	}
 	return ec._CheckInvoicePayload(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNCreateInvoiceInput2githubᚗcomᚋfidesyᚑpayᚋfacadeᚋinternalᚋpkgᚋmodelᚐCreateInvoiceInput(ctx context.Context, v interface{}) (model.CreateInvoiceInput, error) {
+	res, err := ec.unmarshalInputCreateInvoiceInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalNCreateInvoicePayload2githubᚗcomᚋfidesyᚑpayᚋfacadeᚋinternalᚋpkgᚋmodelᚐCreateInvoicePayload(ctx context.Context, sel ast.SelectionSet, v model.CreateInvoicePayload) graphql.Marshaler {

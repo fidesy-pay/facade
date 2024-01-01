@@ -3,11 +3,14 @@ extend type Mutation {
 }
 
 type InvoiceMutations {
-    createInvoice: CreateInvoicePayload!
+    createInvoice(input: CreateInvoiceInput!): CreateInvoicePayload!
     updateInvoice(input: UpdateInvoiceInput!): UpdateInvoicePayload!
     checkInvoice(input: CheckInvoiceInput!): CheckInvoicePayload!
 }
 
+input CreateInvoiceInput {
+    client_id: String!
+}
 type CreateInvoicePayload {
     id: String!
 }

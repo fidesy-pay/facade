@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	usernameCtxName = "username"
+	UsernameCtxName = "username"
 )
 
 var noNeedAuth = []string{"Login", "SignUp"}
@@ -70,7 +70,7 @@ func Auth(authClient auth_service.AuthServiceClient) func(handler http.Handler) 
 				return
 			}
 
-			ctx := context.WithValue(r.Context(), usernameCtxName, authResp.GetUsername())
+			ctx := context.WithValue(r.Context(), UsernameCtxName, authResp.GetUsername())
 
 			r = r.WithContext(ctx)
 
@@ -80,19 +80,23 @@ func Auth(authClient auth_service.AuthServiceClient) func(handler http.Handler) 
 }
 
 func extractAuthorizationToken(headers http.Header) string {
-	values := strings.Split(headers.Get("Cookie"), ";")
-	if len(values) == 0 {
-		return ""
+	authToken := strings.Split(
+		headers.Get("Authorization"), " ",
+	)
+
+	if len(authToken) == 2 {
+		return authToken[1]
 	}
 
-	for _, val := range values {
-		splitVal := strings.Split(val, "=")
-		if len(splitVal) < 2 {
+	cookies := headers.Get("Cookie")
+	for _, cookie := range strings.Split(cookies, ";") {
+		parts := strings.Split(cookie, "=")
+		if len(parts) < 2 {
 			continue
 		}
 
-		if strings.TrimSpace(strings.ToLower(splitVal[0])) == "authorization" {
-			return splitVal[1]
+		if strings.ToLower(strings.TrimSpace(parts[0])) == "authorization" {
+			return parts[1]
 		}
 	}
 

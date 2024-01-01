@@ -1,0 +1,11 @@
+extend type Query {
+    invoices(filter: InvoicesFilter!): InvoicesPagination!
+}
+
+input InvoicesFilter {
+    idIn: [String!]
+}
+
+type InvoicesPagination {
+    items: [Invoice!]
+}

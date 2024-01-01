@@ -18,8 +18,20 @@ type CheckInvoicePayload struct {
 	Invoice *invoices_service.Invoice `json:"invoice"`
 }
 
+type CreateInvoiceInput struct {
+	ClientID string `json:"client_id"`
+}
+
 type CreateInvoicePayload struct {
 	ID string `json:"id"`
+}
+
+type InvoicesFilter struct {
+	IDIn []string `json:"idIn,omitempty"`
+}
+
+type InvoicesPagination struct {
+	Items []*invoices_service.Invoice `json:"items,omitempty"`
 }
 
 type LoginInput struct {

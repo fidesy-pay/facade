@@ -1,0 +1,9 @@
+type Client @goModel(model: "github.com/fidesy-pay/facade/pkg/clients-service.Client") {
+    id: String!
+    username: String!
+    api_key: String!
+    created_at: Time!
+
+    wallets: [Wallet!]
+    invoices: [Invoice]!
+}

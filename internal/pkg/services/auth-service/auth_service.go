@@ -5,17 +5,21 @@ import (
 	"fmt"
 	"github.com/fidesy-pay/facade/internal/pkg/model"
 	auth_service "github.com/fidesy-pay/facade/pkg/auth-service"
+	clients_service "github.com/fidesy-pay/facade/pkg/clients-service"
 )
 
 type Service struct {
-	authClient auth_service.AuthServiceClient
+	authClient    auth_service.AuthServiceClient
+	clientsClient clients_service.ClientsServiceClient
 }
 
 func New(
 	authClient auth_service.AuthServiceClient,
+	clientsClient clients_service.ClientsServiceClient,
 ) *Service {
 	return &Service{
-		authClient: authClient,
+		authClient:    authClient,
+		clientsClient: clientsClient,
 	}
 }
 
@@ -26,6 +30,13 @@ func (s *Service) SignUp(ctx context.Context, input model.SignUpInput) (string, 
 	})
 	if err != nil {
 		return "", fmt.Errorf("authClient.SignUp: %w", err)
+	}
+
+	_, err = s.clientsClient.CreateClient(ctx, &clients_service.CreateClientRequest{
+		Username: input.Username,
+	})
+	if err != nil {
+		return "", fmt.Errorf("clientsClient.CreateClient: %w", err)
 	}
 
 	return signUpResp.Token, nil

@@ -31,6 +31,7 @@ type Config struct {
 }
 
 type ResolverRoot interface {
+	Client() ClientResolver
 	Invoice() InvoiceResolver
 	InvoiceMutations() InvoiceMutationsResolver
 	Mutation() MutationResolver
@@ -43,6 +44,15 @@ type DirectiveRoot struct {
 type ComplexityRoot struct {
 	CheckInvoicePayload struct {
 		Invoice func(childComplexity int) int
+	}
+
+	Client struct {
+		ApiKey    func(childComplexity int) int
+		CreatedAt func(childComplexity int) int
+		Id        func(childComplexity int) int
+		Invoices  func(childComplexity int) int
+		Username  func(childComplexity int) int
+		Wallets   func(childComplexity int) int
 	}
 
 	CreateInvoicePayload struct {
@@ -61,8 +71,12 @@ type ComplexityRoot struct {
 
 	InvoiceMutations struct {
 		CheckInvoice  func(childComplexity int, input model.CheckInvoiceInput) int
-		CreateInvoice func(childComplexity int) int
+		CreateInvoice func(childComplexity int, input model.CreateInvoiceInput) int
 		UpdateInvoice func(childComplexity int, input model.UpdateInvoiceInput) int
+	}
+
+	InvoicesPagination struct {
+		Items func(childComplexity int) int
 	}
 
 	LoginPayload struct {
@@ -76,7 +90,9 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Test func(childComplexity int) int
+		Invoices func(childComplexity int, filter model.InvoicesFilter) int
+		Me       func(childComplexity int) int
+		Test     func(childComplexity int) int
 	}
 
 	SignUpPayload struct {
@@ -89,6 +105,11 @@ type ComplexityRoot struct {
 
 	UpdateInvoicePayload struct {
 		Invoice func(childComplexity int) int
+	}
+
+	Wallet struct {
+		Address func(childComplexity int) int
+		Balance func(childComplexity int) int
 	}
 }
 
@@ -113,6 +134,48 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.CheckInvoicePayload.Invoice(childComplexity), true
+
+	case "Client.api_key":
+		if e.complexity.Client.ApiKey == nil {
+			break
+		}
+
+		return e.complexity.Client.ApiKey(childComplexity), true
+
+	case "Client.created_at":
+		if e.complexity.Client.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Client.CreatedAt(childComplexity), true
+
+	case "Client.id":
+		if e.complexity.Client.Id == nil {
+			break
+		}
+
+		return e.complexity.Client.Id(childComplexity), true
+
+	case "Client.invoices":
+		if e.complexity.Client.Invoices == nil {
+			break
+		}
+
+		return e.complexity.Client.Invoices(childComplexity), true
+
+	case "Client.username":
+		if e.complexity.Client.Username == nil {
+			break
+		}
+
+		return e.complexity.Client.Username(childComplexity), true
+
+	case "Client.wallets":
+		if e.complexity.Client.Wallets == nil {
+			break
+		}
+
+		return e.complexity.Client.Wallets(childComplexity), true
 
 	case "CreateInvoicePayload.id":
 		if e.complexity.CreateInvoicePayload.ID == nil {
@@ -187,7 +250,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			break
 		}
 
-		return e.complexity.InvoiceMutations.CreateInvoice(childComplexity), true
+		args, err := ec.field_InvoiceMutations_createInvoice_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.InvoiceMutations.CreateInvoice(childComplexity, args["input"].(model.CreateInvoiceInput)), true
 
 	case "InvoiceMutations.updateInvoice":
 		if e.complexity.InvoiceMutations.UpdateInvoice == nil {
@@ -200,6 +268,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.InvoiceMutations.UpdateInvoice(childComplexity, args["input"].(model.UpdateInvoiceInput)), true
+
+	case "InvoicesPagination.items":
+		if e.complexity.InvoicesPagination.Items == nil {
+			break
+		}
+
+		return e.complexity.InvoicesPagination.Items(childComplexity), true
 
 	case "LoginPayload.token":
 		if e.complexity.LoginPayload.Token == nil {
@@ -239,6 +314,25 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.SignUp(childComplexity, args["input"].(model.SignUpInput)), true
 
+	case "Query.invoices":
+		if e.complexity.Query.Invoices == nil {
+			break
+		}
+
+		args, err := ec.field_Query_invoices_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.Invoices(childComplexity, args["filter"].(model.InvoicesFilter)), true
+
+	case "Query.me":
+		if e.complexity.Query.Me == nil {
+			break
+		}
+
+		return e.complexity.Query.Me(childComplexity), true
+
 	case "Query.test":
 		if e.complexity.Query.Test == nil {
 			break
@@ -267,6 +361,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.UpdateInvoicePayload.Invoice(childComplexity), true
 
+	case "Wallet.address":
+		if e.complexity.Wallet.Address == nil {
+			break
+		}
+
+		return e.complexity.Wallet.Address(childComplexity), true
+
+	case "Wallet.balance":
+		if e.complexity.Wallet.Balance == nil {
+			break
+		}
+
+		return e.complexity.Wallet.Balance(childComplexity), true
+
 	}
 	return 0, false
 }
@@ -276,6 +384,8 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	ec := executionContext{rc, e, 0, 0, make(chan graphql.DeferredResult)}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
 		ec.unmarshalInputCheckInvoiceInput,
+		ec.unmarshalInputCreateInvoiceInput,
+		ec.unmarshalInputInvoicesFilter,
 		ec.unmarshalInputLoginInput,
 		ec.unmarshalInputSignUpInput,
 		ec.unmarshalInputUpdateInvoiceInput,
@@ -394,11 +504,14 @@ var sources = []*ast.Source{
 }
 
 type InvoiceMutations {
-    createInvoice: CreateInvoicePayload!
+    createInvoice(input: CreateInvoiceInput!): CreateInvoicePayload!
     updateInvoice(input: UpdateInvoiceInput!): UpdateInvoicePayload!
     checkInvoice(input: CheckInvoiceInput!): CheckInvoicePayload!
 }
 
+input CreateInvoiceInput {
+    client_id: String!
+}
 type CreateInvoicePayload {
     id: String!
 }
@@ -445,6 +558,20 @@ input SignUpInput {
 type SignUpPayload {
     token: String!
 }`, BuiltIn: false},
+	{Name: "../../../../api/graphql/query/invoices.query.graphql", Input: `extend type Query {
+    invoices(filter: InvoicesFilter!): InvoicesPagination!
+}
+
+input InvoicesFilter {
+    idIn: [String!]
+}
+
+type InvoicesPagination {
+    items: [Invoice!]
+}`, BuiltIn: false},
+	{Name: "../../../../api/graphql/query/me.query.graphql", Input: `extend type Query {
+    me: Client!
+}`, BuiltIn: false},
 	{Name: "../../../../api/graphql/query/test.query.graphql", Input: `extend type Query {
     test: String!
 }`, BuiltIn: false},
@@ -457,6 +584,15 @@ type SignUpPayload {
 type Query
 
 type Mutation`, BuiltIn: false},
+	{Name: "../../../../api/graphql/types/client.graphql", Input: `type Client @goModel(model: "github.com/fidesy-pay/facade/pkg/clients-service.Client") {
+    id: String!
+    username: String!
+    api_key: String!
+    created_at: Time!
+
+    wallets: [Wallet!]
+    invoices: [Invoice]!
+}`, BuiltIn: false},
 	{Name: "../../../../api/graphql/types/invoice.graphql", Input: `type Invoice @goModel(model: "github.com/fidesy-pay/facade/pkg/invoices-service.Invoice") {
     id: String!
     amount: Float!
@@ -468,6 +604,10 @@ type Mutation`, BuiltIn: false},
 }`, BuiltIn: false},
 	{Name: "../../../../api/graphql/types/token_claims.graphql", Input: `type TokenClaims @goModel(model: "github.com/fidesy-pay/facade/pkg/auth-service.TokenClaims") {
     username: String!
+}`, BuiltIn: false},
+	{Name: "../../../../api/graphql/types/wallet.graphql", Input: `type Wallet @goModel(model: "github.com/fidesy-pay/facade/pkg/crypto-service.Wallet") {
+    address: String!
+    balance: Float!
 }`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)

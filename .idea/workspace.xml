@@ -5,7 +5,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="caeba462-997f-4b14-ad34-80612e361d2d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/LICENSE" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/graphql/mutation/invoice.mutation.graphql" beforeDir="false" afterPath="$PROJECT_DIR$/api/graphql/mutation/invoice.mutation.graphql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/main" beforeDir="false" afterPath="$PROJECT_DIR$/bin/main" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/facade/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/facade/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/app/graph/generated/invoice.generated.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/graph/generated/invoice.generated.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/app/graph/generated/invoice.mutation.generated.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/graph/generated/invoice.mutation.generated.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/app/graph/generated/root_.generated.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/graph/generated/root_.generated.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/app/graph/generated/schema.generated.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/graph/generated/schema.generated.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/app/graph/invoice.mutation.resolvers.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/graph/invoice.mutation.resolvers.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/app/graph/resolver.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/graph/resolver.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/pkg/middleware/auth/auth.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/pkg/middleware/auth/auth.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/pkg/model/generated.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/pkg/model/generated.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/pkg/services/auth-service/auth_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/pkg/services/auth-service/auth_service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/internal/pkg/services/invoices-service/invoices_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/pkg/services/invoices-service/invoices_service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/invoices-service/invoices-service.pb.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/invoices-service/invoices-service.pb.gw.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/invoices-service/invoices-service_grpc.pb.go" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,9 +44,9 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 8
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
   <component name="ProjectId" id="2aHH8p11SAzPOPTYMHALduEGzuU" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -41,6 +59,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.go.formatter.settings.were.checked": "true",
     "RunOnceActivity.go.migrated.go.modules.settings": "true",
+    "RunOnceActivity.go.modules.automatic.dependencies.download": "true",
     "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
     "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "master",
