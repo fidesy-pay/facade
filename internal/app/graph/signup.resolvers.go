@@ -7,6 +7,7 @@ package graph
 import (
 	"context"
 	"fmt"
+	clients_service "github.com/fidesy-pay/facade/pkg/clients-service"
 
 	"github.com/fidesy-pay/facade/internal/pkg/model"
 )
@@ -18,7 +19,18 @@ func (r *mutationResolver) SignUp(ctx context.Context, input model.SignUpInput) 
 		return nil, fmt.Errorf("authService.SignUp: %w", err)
 	}
 
+	// TODO Is this a good approach ?
+	client, err := r.clientsClient.GetClient(ctx, &clients_service.GetClientRequest{
+		Filter: &clients_service.GetClientRequest_Filter{
+			UsernameIn: []string{input.Username},
+		},
+	})
+	if err != nil {
+		return nil, fmt.Errorf("clientsClient.GetClient: %w", err)
+	}
+
 	return &model.SignUpPayload{
-		Token: token,
+		Token:    token,
+		ClientID: client.Id,
 	}, nil
 }

@@ -4,20 +4,15 @@ import (
 	"github.com/opentracing/opentracing-go"
 	jaegercfg "github.com/uber/jaeger-client-go/config"
 	"io"
+	"os"
 	"time"
 )
 
 // NewJaegerTracer for current service
 func NewJaegerTracer() (tracer opentracing.Tracer, closer io.Closer, err error) {
-	jaegerEndpoint, err := GetValue(JaegerEndpoint)
-	if err != nil {
-		return nil, nil, err
-	}
+	jaegerEndpoint := "http://jaeger:14268/api/traces"
 
-	serviceName, err := GetValue(ServiceName)
-	if err != nil {
-		return nil, nil, err
-	}
+	serviceName := os.Getenv("APP_NAME")
 
 	cfg := jaegercfg.Configuration{
 		Sampler: &jaegercfg.SamplerConfig{
@@ -34,9 +29,11 @@ func NewJaegerTracer() (tracer opentracing.Tracer, closer io.Closer, err error) 
 
 	tracer, closer, err = cfg.NewTracer()
 	if err != nil {
-		return
+		return nil, nil, err
 	}
 
-	opentracing.SetGlobalTracer(tracer)
+	Tracer = tracer
+
+	opentracing.SetGlobalTracer(Tracer)
 	return
 }

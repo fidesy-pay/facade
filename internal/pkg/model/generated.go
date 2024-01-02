@@ -7,8 +7,17 @@ import (
 	"io"
 	"strconv"
 
+	crypto_service "github.com/fidesy-pay/facade/pkg/crypto-service"
 	invoices_service "github.com/fidesy-pay/facade/pkg/invoices-service"
 )
+
+type BalancesFilter struct {
+	AddressIn []string `json:"addressIn,omitempty"`
+}
+
+type BalancesPagination struct {
+	Balances []float64 `json:"balances,omitempty"`
+}
 
 type CheckInvoiceInput struct {
 	ID string `json:"id"`
@@ -19,7 +28,8 @@ type CheckInvoicePayload struct {
 }
 
 type CreateInvoiceInput struct {
-	ClientID string `json:"client_id"`
+	ClientID  string  `json:"client_id"`
+	UsdAmount float64 `json:"usd_amount"`
 }
 
 type CreateInvoicePayload struct {
@@ -27,7 +37,8 @@ type CreateInvoicePayload struct {
 }
 
 type InvoicesFilter struct {
-	IDIn []string `json:"idIn,omitempty"`
+	IDIn       []string `json:"idIn,omitempty"`
+	ClientIDIn []string `json:"clientIdIn,omitempty"`
 }
 
 type InvoicesPagination struct {
@@ -40,7 +51,8 @@ type LoginInput struct {
 }
 
 type LoginPayload struct {
-	Token string `json:"token"`
+	Token    string `json:"token"`
+	ClientID string `json:"clientId"`
 }
 
 type SignUpInput struct {
@@ -49,18 +61,26 @@ type SignUpInput struct {
 }
 
 type SignUpPayload struct {
-	Token string `json:"token"`
+	Token    string `json:"token"`
+	ClientID string `json:"clientId"`
 }
 
 type UpdateInvoiceInput struct {
-	ID     string  `json:"id"`
-	Amount float64 `json:"amount"`
-	Chain  string  `json:"chain"`
-	Token  string  `json:"token"`
+	ID    string `json:"id"`
+	Chain string `json:"chain"`
+	Token string `json:"token"`
 }
 
 type UpdateInvoicePayload struct {
 	Invoice *invoices_service.Invoice `json:"invoice"`
+}
+
+type WalletsFilter struct {
+	ClientIDIn []string `json:"clientIdIn,omitempty"`
+}
+
+type WalletsPagination struct {
+	Items []*crypto_service.Wallet `json:"items,omitempty"`
 }
 
 type InvoiceStatus string

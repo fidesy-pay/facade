@@ -9,4 +9,5 @@ input LoginInput {
 
 type LoginPayload {
     token: String!
+    clientId: String!
 }

@@ -301,8 +301,10 @@ func (ec *executionContext) fieldContext_Client_invoices(ctx context.Context, fi
 			switch field.Name {
 			case "id":
 				return ec.fieldContext_Invoice_id(ctx, field)
-			case "amount":
-				return ec.fieldContext_Invoice_amount(ctx, field)
+			case "usd_amount":
+				return ec.fieldContext_Invoice_usd_amount(ctx, field)
+			case "token_amount":
+				return ec.fieldContext_Invoice_token_amount(ctx, field)
 			case "chain":
 				return ec.fieldContext_Invoice_chain(ctx, field)
 			case "token":

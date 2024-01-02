@@ -30,10 +30,22 @@ func New(
 	return s
 }
 
+type createInvoiceBody struct {
+	USDAmount float64 `json:"usd_amount"`
+}
+
 func (s *Service) createInvoice(w http.ResponseWriter, r *http.Request) {
 	apiKey := r.Header.Get(APIKey)
 	if apiKey == "" {
 		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	var invoiceBody *createInvoiceBody
+	err := json.NewDecoder(r.Body).Decode(&invoiceBody)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte(err.Error()))
 		return
 	}
 
@@ -48,7 +60,7 @@ func (s *Service) createInvoice(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	invoiceID, err := s.invoicesService.CreateInvoice(r.Context(), client.Id)
+	invoiceID, err := s.invoicesService.CreateInvoice(r.Context(), client.Id, invoiceBody.USDAmount)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))

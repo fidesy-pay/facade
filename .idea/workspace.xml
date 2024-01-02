@@ -4,27 +4,7 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="caeba462-997f-4b14-ad34-80612e361d2d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/graphql/mutation/invoice.mutation.graphql" beforeDir="false" afterPath="$PROJECT_DIR$/api/graphql/mutation/invoice.mutation.graphql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/main" beforeDir="false" afterPath="$PROJECT_DIR$/bin/main" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cmd/facade/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/facade/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/app/graph/generated/invoice.generated.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/graph/generated/invoice.generated.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/app/graph/generated/invoice.mutation.generated.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/graph/generated/invoice.mutation.generated.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/app/graph/generated/root_.generated.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/graph/generated/root_.generated.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/app/graph/generated/schema.generated.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/graph/generated/schema.generated.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/app/graph/invoice.mutation.resolvers.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/graph/invoice.mutation.resolvers.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/app/graph/resolver.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/app/graph/resolver.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/pkg/middleware/auth/auth.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/pkg/middleware/auth/auth.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/pkg/model/generated.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/pkg/model/generated.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/pkg/services/auth-service/auth_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/pkg/services/auth-service/auth_service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/pkg/services/invoices-service/invoices_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/pkg/services/invoices-service/invoices_service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/invoices-service/invoices-service.pb.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/invoices-service/invoices-service.pb.gw.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/invoices-service/invoices-service_grpc.pb.go" beforeDir="false" />
-    </list>
+    <list default="true" id="caeba462-997f-4b14-ad34-80612e361d2d" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -62,7 +42,7 @@
     "RunOnceActivity.go.modules.automatic.dependencies.download": "true",
     "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
     "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "master",
+    "git-widget-placeholder": "init-project",
     "go.import.settings.migrated": "true",
     "go.sdk.automatically.set": "true",
     "last_opened_file_path": "/Users/fidesy/Programming/Go/fidesy-pay/facade",

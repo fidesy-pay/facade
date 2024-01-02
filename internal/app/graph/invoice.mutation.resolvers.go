@@ -14,7 +14,7 @@ import (
 
 // CreateInvoice is the resolver for the createInvoice field.
 func (r *invoiceMutationsResolver) CreateInvoice(ctx context.Context, obj *model.InvoiceMutations, input model.CreateInvoiceInput) (*model.CreateInvoicePayload, error) {
-	invoiceID, err := r.invoicesService.CreateInvoice(ctx, input.ClientID)
+	invoiceID, err := r.invoicesService.CreateInvoice(ctx, input.ClientID, input.UsdAmount)
 	if err != nil {
 		return nil, fmt.Errorf("invoicesService.CreateInvoice: %w", err)
 	}

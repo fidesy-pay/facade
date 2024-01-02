@@ -4,6 +4,6 @@ type Client @goModel(model: "github.com/fidesy-pay/facade/pkg/clients-service.Cl
     api_key: String!
     created_at: Time!
 
-    wallets: [Wallet!]
-    invoices: [Invoice]!
+    wallets: [Wallet!] @deprecated
+    invoices: [Invoice]! @deprecated
 }

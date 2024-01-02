@@ -121,8 +121,10 @@ func (ec *executionContext) fieldContext_CheckInvoicePayload_invoice(ctx context
 			switch field.Name {
 			case "id":
 				return ec.fieldContext_Invoice_id(ctx, field)
-			case "amount":
-				return ec.fieldContext_Invoice_amount(ctx, field)
+			case "usd_amount":
+				return ec.fieldContext_Invoice_usd_amount(ctx, field)
+			case "token_amount":
+				return ec.fieldContext_Invoice_token_amount(ctx, field)
 			case "chain":
 				return ec.fieldContext_Invoice_chain(ctx, field)
 			case "token":
@@ -402,8 +404,10 @@ func (ec *executionContext) fieldContext_UpdateInvoicePayload_invoice(ctx contex
 			switch field.Name {
 			case "id":
 				return ec.fieldContext_Invoice_id(ctx, field)
-			case "amount":
-				return ec.fieldContext_Invoice_amount(ctx, field)
+			case "usd_amount":
+				return ec.fieldContext_Invoice_usd_amount(ctx, field)
+			case "token_amount":
+				return ec.fieldContext_Invoice_token_amount(ctx, field)
 			case "chain":
 				return ec.fieldContext_Invoice_chain(ctx, field)
 			case "token":
@@ -461,7 +465,7 @@ func (ec *executionContext) unmarshalInputCreateInvoiceInput(ctx context.Context
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"client_id"}
+	fieldsInOrder := [...]string{"client_id", "usd_amount"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -477,6 +481,15 @@ func (ec *executionContext) unmarshalInputCreateInvoiceInput(ctx context.Context
 				return it, err
 			}
 			it.ClientID = data
+		case "usd_amount":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("usd_amount"))
+			data, err := ec.unmarshalNFloat2float64(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.UsdAmount = data
 		}
 	}
 
@@ -490,7 +503,7 @@ func (ec *executionContext) unmarshalInputUpdateInvoiceInput(ctx context.Context
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"id", "amount", "chain", "token"}
+	fieldsInOrder := [...]string{"id", "chain", "token"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -506,15 +519,6 @@ func (ec *executionContext) unmarshalInputUpdateInvoiceInput(ctx context.Context
 				return it, err
 			}
 			it.ID = data
-		case "amount":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("amount"))
-			data, err := ec.unmarshalNFloat2float64(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Amount = data
 		case "chain":
 			var err error
 

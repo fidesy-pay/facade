@@ -4,7 +4,7 @@ go 1.21.2
 
 require (
 	github.com/99designs/gqlgen v0.17.38
-	github.com/fidesyx/platform v0.0.0-20231203163353-924e3cef447d
+	github.com/fidesyx/platform v0.0.0-20240101154639-3f3c83bd204a
 	github.com/go-chi/chi v1.5.5
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.18.1
 	github.com/opentracing/opentracing-go v1.2.0

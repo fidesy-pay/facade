@@ -66,8 +66,10 @@ func (ec *executionContext) fieldContext_InvoicesPagination_items(ctx context.Co
 			switch field.Name {
 			case "id":
 				return ec.fieldContext_Invoice_id(ctx, field)
-			case "amount":
-				return ec.fieldContext_Invoice_amount(ctx, field)
+			case "usd_amount":
+				return ec.fieldContext_Invoice_usd_amount(ctx, field)
+			case "token_amount":
+				return ec.fieldContext_Invoice_token_amount(ctx, field)
 			case "chain":
 				return ec.fieldContext_Invoice_chain(ctx, field)
 			case "token":
@@ -96,7 +98,7 @@ func (ec *executionContext) unmarshalInputInvoicesFilter(ctx context.Context, ob
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"idIn"}
+	fieldsInOrder := [...]string{"idIn", "clientIdIn"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -112,6 +114,15 @@ func (ec *executionContext) unmarshalInputInvoicesFilter(ctx context.Context, ob
 				return it, err
 			}
 			it.IDIn = data
+		case "clientIdIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("clientIdIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ClientIDIn = data
 		}
 	}
 

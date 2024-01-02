@@ -7,15 +7,16 @@ package graph
 import (
 	"context"
 	"fmt"
-	invoicesservice "github.com/fidesy-pay/facade/internal/pkg/services/invoices-service"
 
 	"github.com/fidesy-pay/facade/internal/pkg/model"
+	invoicesservice "github.com/fidesy-pay/facade/internal/pkg/services/invoices-service"
 )
 
 // Invoices is the resolver for the invoices field.
 func (r *queryResolver) Invoices(ctx context.Context, filter model.InvoicesFilter) (*model.InvoicesPagination, error) {
 	invoices, err := r.invoicesService.ListInvoices(ctx, invoicesservice.ListInvoicesFilter{
-		IDIn: filter.IDIn,
+		IDIn:       filter.IDIn,
+		ClientIDIn: filter.ClientIDIn,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("invoicesService.ListInvoices: %w", err)

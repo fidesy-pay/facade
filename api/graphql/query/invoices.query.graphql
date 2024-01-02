@@ -4,6 +4,7 @@ extend type Query {
 
 input InvoicesFilter {
     idIn: [String!]
+    clientIdIn: [String!]
 }
 
 type InvoicesPagination {

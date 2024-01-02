@@ -19,9 +19,10 @@ func New(
 	}
 }
 
-func (s *Service) CreateInvoice(ctx context.Context, clientID string) (string, error) {
+func (s *Service) CreateInvoice(ctx context.Context, clientID string, usdAmount float64) (string, error) {
 	invoiceResp, err := s.invoicesClient.CreateInvoice(ctx, &desc.CreateInvoiceRequest{
-		ClientId: clientID,
+		ClientId:  clientID,
+		UsdAmount: usdAmount,
 	})
 	if err != nil {
 		return "", fmt.Errorf("invoicesClient.CreateInvoice: %w", err)
@@ -32,10 +33,9 @@ func (s *Service) CreateInvoice(ctx context.Context, clientID string) (string, e
 
 func (s *Service) UpdateInvoice(ctx context.Context, input model.UpdateInvoiceInput) (*desc.Invoice, error) {
 	invoiceResp, err := s.invoicesClient.UpdateInvoice(ctx, &desc.UpdateInvoiceRequest{
-		Id:     input.ID,
-		Amount: input.Amount,
-		Chain:  input.Chain,
-		Token:  input.Token,
+		Id:    input.ID,
+		Chain: input.Chain,
+		Token: input.Token,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("invoicesClient.UpdateInvoice: %w", err)

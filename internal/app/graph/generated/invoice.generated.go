@@ -80,8 +80,8 @@ func (ec *executionContext) fieldContext_Invoice_id(ctx context.Context, field g
 	return fc, nil
 }
 
-func (ec *executionContext) _Invoice_amount(ctx context.Context, field graphql.CollectedField, obj *invoices_service.Invoice) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Invoice_amount(ctx, field)
+func (ec *executionContext) _Invoice_usd_amount(ctx context.Context, field graphql.CollectedField, obj *invoices_service.Invoice) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Invoice_usd_amount(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -94,7 +94,7 @@ func (ec *executionContext) _Invoice_amount(ctx context.Context, field graphql.C
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Amount, nil
+		return obj.UsdAmount, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -111,7 +111,51 @@ func (ec *executionContext) _Invoice_amount(ctx context.Context, field graphql.C
 	return ec.marshalNFloat2float64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Invoice_amount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Invoice_usd_amount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Invoice",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Float does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Invoice_token_amount(ctx context.Context, field graphql.CollectedField, obj *invoices_service.Invoice) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Invoice_token_amount(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.TokenAmount, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(float64)
+	fc.Result = res
+	return ec.marshalNFloat2float64(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Invoice_token_amount(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Invoice",
 		Field:      field,
@@ -372,8 +416,13 @@ func (ec *executionContext) _Invoice(ctx context.Context, sel ast.SelectionSet, 
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
-		case "amount":
-			out.Values[i] = ec._Invoice_amount(ctx, field, obj)
+		case "usd_amount":
+			out.Values[i] = ec._Invoice_usd_amount(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "token_amount":
+			out.Values[i] = ec._Invoice_token_amount(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}

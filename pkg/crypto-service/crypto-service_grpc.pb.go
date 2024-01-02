@@ -23,6 +23,7 @@ const (
 	CryptoService_Transfer_FullMethodName     = "/crypto_service.CryptoService/Transfer"
 	CryptoService_CreateWallet_FullMethodName = "/crypto_service.CryptoService/CreateWallet"
 	CryptoService_ListWallets_FullMethodName  = "/crypto_service.CryptoService/ListWallets"
+	CryptoService_GetBalance_FullMethodName   = "/crypto_service.CryptoService/GetBalance"
 )
 
 // CryptoServiceClient is the client API for CryptoService service.
@@ -33,6 +34,7 @@ type CryptoServiceClient interface {
 	Transfer(ctx context.Context, in *TransferRequest, opts ...grpc.CallOption) (*TransferResponse, error)
 	CreateWallet(ctx context.Context, in *CreateWalletRequest, opts ...grpc.CallOption) (*Wallet, error)
 	ListWallets(ctx context.Context, in *ListWalletsRequest, opts ...grpc.CallOption) (*ListWalletsResponse, error)
+	GetBalance(ctx context.Context, in *GetBalanceRequest, opts ...grpc.CallOption) (*GetBalanceResponse, error)
 }
 
 type cryptoServiceClient struct {
@@ -79,6 +81,15 @@ func (c *cryptoServiceClient) ListWallets(ctx context.Context, in *ListWalletsRe
 	return out, nil
 }
 
+func (c *cryptoServiceClient) GetBalance(ctx context.Context, in *GetBalanceRequest, opts ...grpc.CallOption) (*GetBalanceResponse, error) {
+	out := new(GetBalanceResponse)
+	err := c.cc.Invoke(ctx, CryptoService_GetBalance_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CryptoServiceServer is the server API for CryptoService service.
 // All implementations must embed UnimplementedCryptoServiceServer
 // for forward compatibility
@@ -87,6 +98,7 @@ type CryptoServiceServer interface {
 	Transfer(context.Context, *TransferRequest) (*TransferResponse, error)
 	CreateWallet(context.Context, *CreateWalletRequest) (*Wallet, error)
 	ListWallets(context.Context, *ListWalletsRequest) (*ListWalletsResponse, error)
+	GetBalance(context.Context, *GetBalanceRequest) (*GetBalanceResponse, error)
 	mustEmbedUnimplementedCryptoServiceServer()
 }
 
@@ -105,6 +117,9 @@ func (UnimplementedCryptoServiceServer) CreateWallet(context.Context, *CreateWal
 }
 func (UnimplementedCryptoServiceServer) ListWallets(context.Context, *ListWalletsRequest) (*ListWalletsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListWallets not implemented")
+}
+func (UnimplementedCryptoServiceServer) GetBalance(context.Context, *GetBalanceRequest) (*GetBalanceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetBalance not implemented")
 }
 func (UnimplementedCryptoServiceServer) mustEmbedUnimplementedCryptoServiceServer() {}
 
@@ -191,6 +206,24 @@ func _CryptoService_ListWallets_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CryptoService_GetBalance_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetBalanceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CryptoServiceServer).GetBalance(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CryptoService_GetBalance_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CryptoServiceServer).GetBalance(ctx, req.(*GetBalanceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CryptoService_ServiceDesc is the grpc.ServiceDesc for CryptoService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -213,6 +246,10 @@ var CryptoService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListWallets",
 			Handler:    _CryptoService_ListWallets_Handler,
+		},
+		{
+			MethodName: "GetBalance",
+			Handler:    _CryptoService_GetBalance_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
