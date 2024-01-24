@@ -65,7 +65,7 @@ func main() {
 	authClient, err := scratch.NewClient[auth_service.AuthServiceClient](
 		ctx,
 		auth_service.NewAuthServiceClient,
-		"auth-service",
+		"fidesy:///auth-service",
 	)
 	if err != nil {
 		log.Fatalf("NewAuthClient: %v", err)
@@ -74,7 +74,7 @@ func main() {
 	invoicesClient, err := scratch.NewClient[invoices_service.InvoicesServiceClient](
 		ctx,
 		invoices_service.NewInvoicesServiceClient,
-		"invoices-service",
+		"fidesy:///invoices-service",
 	)
 	if err != nil {
 		log.Fatalf("NewInvoicesClient: %v", err)
@@ -83,7 +83,7 @@ func main() {
 	clientsClient, err := scratch.NewClient[clients_service.ClientsServiceClient](
 		ctx,
 		clients_service.NewClientsServiceClient,
-		"clients-service",
+		"fidesy:///clients-service",
 	)
 	if err != nil {
 		log.Fatalf("NewClientsClient: %v", err)
@@ -92,7 +92,7 @@ func main() {
 	cryptoServiceClient, err := scratch.NewClient[crypto_service.CryptoServiceClient](
 		ctx,
 		crypto_service.NewCryptoServiceClient,
-		"crypto-service",
+		"fidesy:///crypto-service",
 	)
 	if err != nil {
 		log.Fatalf("NewCryptoClient: %v", err)
@@ -103,10 +103,10 @@ func main() {
 	invoicesService := invoicesservice.New(invoicesClient)
 
 	resolver := graph.NewResolver(
-		clientsClient,
-		cryptoServiceClient,
-		authService,
-		invoicesService,
+		graph.WithClientsClient(clientsClient),
+		graph.WithCryptoServiceClient(cryptoServiceClient),
+		graph.WithAuthService(authService),
+		graph.WithInvoicesService(invoicesService),
 	)
 
 	schema := generated.NewExecutableSchema(generated.Config{

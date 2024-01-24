@@ -7,9 +7,9 @@ package graph
 import (
 	"context"
 	"fmt"
-	clients_service "github.com/fidesy-pay/facade/pkg/clients-service"
 
 	"github.com/fidesy-pay/facade/internal/pkg/model"
+	clients_service "github.com/fidesy-pay/facade/pkg/clients-service"
 )
 
 // SignUp is the resolver for the signUp field.

@@ -99,7 +99,6 @@ type ComplexityRoot struct {
 		Balances func(childComplexity int, filter model.BalancesFilter) int
 		Invoices func(childComplexity int, filter model.InvoicesFilter) int
 		Me       func(childComplexity int) int
-		Test     func(childComplexity int) int
 		Wallets  func(childComplexity int, filter model.WalletsFilter) int
 	}
 
@@ -379,13 +378,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Me(childComplexity), true
 
-	case "Query.test":
-		if e.complexity.Query.Test == nil {
-			break
-		}
-
-		return e.complexity.Query.Test(childComplexity), true
-
 	case "Query.wallets":
 		if e.complexity.Query.Wallets == nil {
 			break
@@ -659,9 +651,6 @@ type InvoicesPagination {
 }`, BuiltIn: false},
 	{Name: "../../../../api/graphql/query/me.query.graphql", Input: `extend type Query {
     me: Client!
-}`, BuiltIn: false},
-	{Name: "../../../../api/graphql/query/test.query.graphql", Input: `extend type Query {
-    test: String!
 }`, BuiltIn: false},
 	{Name: "../../../../api/graphql/query/wallets.query.graphql", Input: `extend type Query {
     wallets(filter: WalletsFilter!): WalletsPagination!

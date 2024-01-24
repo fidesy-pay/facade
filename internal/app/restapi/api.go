@@ -26,6 +26,7 @@ func New(
 	}
 
 	router.Post("/api/invoice", s.createInvoice)
+	router.Get("/api/invoice/{invoice_id}", s.getInvoice)
 
 	return s
 }
@@ -71,6 +72,45 @@ func (s *Service) createInvoice(w http.ResponseWriter, r *http.Request) {
 		"invoice_id": invoiceID,
 	})
 
+	w.WriteHeader(http.StatusOK)
+	w.Write(body)
+}
+
+func (s *Service) getInvoice(w http.ResponseWriter, r *http.Request) {
+	invoiceID := chi.URLParam(r, "invoice_id")
+	if invoiceID == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	apiKey := r.Header.Get(APIKey)
+	if apiKey == "" {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
+	client, err := s.clientsClient.GetClient(r.Context(), &clients_service.GetClientRequest{
+		Filter: &clients_service.GetClientRequest_Filter{
+			ApiKeyIn: []string{apiKey},
+		},
+	})
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	invoices, err := s.invoicesService.ListInvoices(r.Context(), invoicesservice.ListInvoicesFilter{
+		IDIn:       []string{invoiceID},
+		ClientIDIn: []string{client.Id},
+	})
+	if err != nil {
+		w.WriteHeader(http.StatusUnauthorized)
+		w.Write([]byte(err.Error()))
+		return
+	}
+
+	body, _ := json.Marshal(invoices)
 	w.WriteHeader(http.StatusOK)
 	w.Write(body)
 }

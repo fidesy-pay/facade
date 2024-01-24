@@ -18,16 +18,38 @@ type Resolver struct {
 	invoicesService     *invoicesservice.Service
 }
 
-func NewResolver(
-	clientsClient clients_service.ClientsServiceClient,
-	cryptoServiceClient crypto_service.CryptoServiceClient,
-	authService *authservice.Service,
-	invoicesService *invoicesservice.Service,
-) *Resolver {
-	return &Resolver{
-		clientsClient:       clientsClient,
-		cryptoServiceClient: cryptoServiceClient,
-		authService:         authService,
-		invoicesService:     invoicesService,
+type ResolverOption func(r *Resolver)
+
+func WithClientsClient(clientsClient clients_service.ClientsServiceClient) ResolverOption {
+	return func(r *Resolver) {
+		r.clientsClient = clientsClient
 	}
+}
+
+func WithCryptoServiceClient(cryptoServiceClient crypto_service.CryptoServiceClient) ResolverOption {
+	return func(r *Resolver) {
+		r.cryptoServiceClient = cryptoServiceClient
+	}
+}
+
+func WithAuthService(authService *authservice.Service) ResolverOption {
+	return func(r *Resolver) {
+		r.authService = authService
+	}
+}
+
+func WithInvoicesService(invoicesService *invoicesservice.Service) ResolverOption {
+	return func(r *Resolver) {
+		r.invoicesService = invoicesService
+	}
+}
+
+func NewResolver(options ...ResolverOption) *Resolver {
+	r := &Resolver{}
+
+	for _, opt := range options {
+		opt(r)
+	}
+
+	return r
 }
