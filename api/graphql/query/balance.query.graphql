@@ -1,11 +1,13 @@
 extend type Query {
-    balances(filter: BalancesFilter!): BalancesPagination!
+    balance(filter: BalanceFilter!): Balance!
 }
 
-input BalancesFilter {
-    addressIn: [String!]
+input BalanceFilter {
+    addressEq: String!
+    chainEq: String!
+    tokenEq: String!
 }
 
-type BalancesPagination {
-    balances: [Float!]
+type Balance {
+    balance: Float!
 }

@@ -11,12 +11,14 @@ import (
 	invoices_service "github.com/fidesy-pay/facade/pkg/invoices-service"
 )
 
-type BalancesFilter struct {
-	AddressIn []string `json:"addressIn,omitempty"`
+type Balance struct {
+	Balance float64 `json:"balance"`
 }
 
-type BalancesPagination struct {
-	Balances []float64 `json:"balances,omitempty"`
+type BalanceFilter struct {
+	AddressEq string `json:"addressEq"`
+	ChainEq   string `json:"chainEq"`
+	TokenEq   string `json:"tokenEq"`
 }
 
 type CheckInvoiceInput struct {

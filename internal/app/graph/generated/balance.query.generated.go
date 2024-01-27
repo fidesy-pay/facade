@@ -27,8 +27,8 @@ import (
 
 // region    **************************** field.gotpl *****************************
 
-func (ec *executionContext) _BalancesPagination_balances(ctx context.Context, field graphql.CollectedField, obj *model.BalancesPagination) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_BalancesPagination_balances(ctx, field)
+func (ec *executionContext) _Balance_balance(ctx context.Context, field graphql.CollectedField, obj *model.Balance) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Balance_balance(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -41,23 +41,26 @@ func (ec *executionContext) _BalancesPagination_balances(ctx context.Context, fi
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Balances, nil
+		return obj.Balance, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.([]float64)
+	res := resTmp.(float64)
 	fc.Result = res
-	return ec.marshalOFloat2ᚕfloat64ᚄ(ctx, field.Selections, res)
+	return ec.marshalNFloat2float64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_BalancesPagination_balances(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Balance_balance(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "BalancesPagination",
+		Object:     "Balance",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -72,29 +75,47 @@ func (ec *executionContext) fieldContext_BalancesPagination_balances(ctx context
 
 // region    **************************** input.gotpl *****************************
 
-func (ec *executionContext) unmarshalInputBalancesFilter(ctx context.Context, obj interface{}) (model.BalancesFilter, error) {
-	var it model.BalancesFilter
+func (ec *executionContext) unmarshalInputBalanceFilter(ctx context.Context, obj interface{}) (model.BalanceFilter, error) {
+	var it model.BalanceFilter
 	asMap := map[string]interface{}{}
 	for k, v := range obj.(map[string]interface{}) {
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"addressIn"}
+	fieldsInOrder := [...]string{"addressEq", "chainEq", "tokenEq"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
 			continue
 		}
 		switch k {
-		case "addressIn":
+		case "addressEq":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("addressIn"))
-			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("addressEq"))
+			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.AddressIn = data
+			it.AddressEq = data
+		case "chainEq":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("chainEq"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ChainEq = data
+		case "tokenEq":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tokenEq"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.TokenEq = data
 		}
 	}
 
@@ -109,19 +130,22 @@ func (ec *executionContext) unmarshalInputBalancesFilter(ctx context.Context, ob
 
 // region    **************************** object.gotpl ****************************
 
-var balancesPaginationImplementors = []string{"BalancesPagination"}
+var balanceImplementors = []string{"Balance"}
 
-func (ec *executionContext) _BalancesPagination(ctx context.Context, sel ast.SelectionSet, obj *model.BalancesPagination) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, balancesPaginationImplementors)
+func (ec *executionContext) _Balance(ctx context.Context, sel ast.SelectionSet, obj *model.Balance) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, balanceImplementors)
 
 	out := graphql.NewFieldSet(fields)
 	deferred := make(map[string]*graphql.FieldSet)
 	for i, field := range fields {
 		switch field.Name {
 		case "__typename":
-			out.Values[i] = graphql.MarshalString("BalancesPagination")
-		case "balances":
-			out.Values[i] = ec._BalancesPagination_balances(ctx, field, obj)
+			out.Values[i] = graphql.MarshalString("Balance")
+		case "balance":
+			out.Values[i] = ec._Balance_balance(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -149,23 +173,23 @@ func (ec *executionContext) _BalancesPagination(ctx context.Context, sel ast.Sel
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) unmarshalNBalancesFilter2githubᚗcomᚋfidesyᚑpayᚋfacadeᚋinternalᚋpkgᚋmodelᚐBalancesFilter(ctx context.Context, v interface{}) (model.BalancesFilter, error) {
-	res, err := ec.unmarshalInputBalancesFilter(ctx, v)
-	return res, graphql.ErrorOnPath(ctx, err)
+func (ec *executionContext) marshalNBalance2githubᚗcomᚋfidesyᚑpayᚋfacadeᚋinternalᚋpkgᚋmodelᚐBalance(ctx context.Context, sel ast.SelectionSet, v model.Balance) graphql.Marshaler {
+	return ec._Balance(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNBalancesPagination2githubᚗcomᚋfidesyᚑpayᚋfacadeᚋinternalᚋpkgᚋmodelᚐBalancesPagination(ctx context.Context, sel ast.SelectionSet, v model.BalancesPagination) graphql.Marshaler {
-	return ec._BalancesPagination(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNBalancesPagination2ᚖgithubᚗcomᚋfidesyᚑpayᚋfacadeᚋinternalᚋpkgᚋmodelᚐBalancesPagination(ctx context.Context, sel ast.SelectionSet, v *model.BalancesPagination) graphql.Marshaler {
+func (ec *executionContext) marshalNBalance2ᚖgithubᚗcomᚋfidesyᚑpayᚋfacadeᚋinternalᚋpkgᚋmodelᚐBalance(ctx context.Context, sel ast.SelectionSet, v *model.Balance) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
 		}
 		return graphql.Null
 	}
-	return ec._BalancesPagination(ctx, sel, v)
+	return ec._Balance(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNBalanceFilter2githubᚗcomᚋfidesyᚑpayᚋfacadeᚋinternalᚋpkgᚋmodelᚐBalanceFilter(ctx context.Context, v interface{}) (model.BalanceFilter, error) {
+	res, err := ec.unmarshalInputBalanceFilter(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 // endregion ***************************** type.gotpl *****************************

@@ -23,7 +23,7 @@ type MutationResolver interface {
 	SignUp(ctx context.Context, input model.SignUpInput) (*model.SignUpPayload, error)
 }
 type QueryResolver interface {
-	Balances(ctx context.Context, filter model.BalancesFilter) (*model.BalancesPagination, error)
+	Balance(ctx context.Context, filter model.BalanceFilter) (*model.Balance, error)
 	Invoices(ctx context.Context, filter model.InvoicesFilter) (*model.InvoicesPagination, error)
 	Me(ctx context.Context) (*clients_service.Client, error)
 	Wallets(ctx context.Context, filter model.WalletsFilter) (*model.WalletsPagination, error)
@@ -78,13 +78,13 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_balances_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_balance_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 model.BalancesFilter
+	var arg0 model.BalanceFilter
 	if tmp, ok := rawArgs["filter"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("filter"))
-		arg0, err = ec.unmarshalNBalancesFilter2githubᚗcomᚋfidesyᚑpayᚋfacadeᚋinternalᚋpkgᚋmodelᚐBalancesFilter(ctx, tmp)
+		arg0, err = ec.unmarshalNBalanceFilter2githubᚗcomᚋfidesyᚑpayᚋfacadeᚋinternalᚋpkgᚋmodelᚐBalanceFilter(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -305,8 +305,8 @@ func (ec *executionContext) fieldContext_Mutation_signUp(ctx context.Context, fi
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_balances(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_balances(ctx, field)
+func (ec *executionContext) _Query_balance(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_balance(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -319,7 +319,7 @@ func (ec *executionContext) _Query_balances(ctx context.Context, field graphql.C
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Balances(rctx, fc.Args["filter"].(model.BalancesFilter))
+		return ec.resolvers.Query().Balance(rctx, fc.Args["filter"].(model.BalanceFilter))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -331,12 +331,12 @@ func (ec *executionContext) _Query_balances(ctx context.Context, field graphql.C
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.BalancesPagination)
+	res := resTmp.(*model.Balance)
 	fc.Result = res
-	return ec.marshalNBalancesPagination2ᚖgithubᚗcomᚋfidesyᚑpayᚋfacadeᚋinternalᚋpkgᚋmodelᚐBalancesPagination(ctx, field.Selections, res)
+	return ec.marshalNBalance2ᚖgithubᚗcomᚋfidesyᚑpayᚋfacadeᚋinternalᚋpkgᚋmodelᚐBalance(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_balances(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_balance(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -344,10 +344,10 @@ func (ec *executionContext) fieldContext_Query_balances(ctx context.Context, fie
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "balances":
-				return ec.fieldContext_BalancesPagination_balances(ctx, field)
+			case "balance":
+				return ec.fieldContext_Balance_balance(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type BalancesPagination", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type Balance", field.Name)
 		},
 	}
 	defer func() {
@@ -357,7 +357,7 @@ func (ec *executionContext) fieldContext_Query_balances(ctx context.Context, fie
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_balances_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_balance_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -763,7 +763,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Query")
-		case "balances":
+		case "balance":
 			field := field
 
 			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
@@ -772,7 +772,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_balances(ctx, field)
+				res = ec._Query_balance(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}

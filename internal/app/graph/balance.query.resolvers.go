@@ -12,22 +12,18 @@ import (
 	crypto_service "github.com/fidesy-pay/facade/pkg/crypto-service"
 )
 
-// Balances is the resolver for the balances field.
-func (r *queryResolver) Balances(ctx context.Context, filter model.BalancesFilter) (*model.BalancesPagination, error) {
-	if len(filter.AddressIn) == 0 {
-		return &model.BalancesPagination{}, nil
-	}
-
+// Balance is the resolver for the balance field.
+func (r *queryResolver) Balance(ctx context.Context, filter model.BalanceFilter) (*model.Balance, error) {
 	balanceResp, err := r.cryptoServiceClient.GetBalance(ctx, &crypto_service.GetBalanceRequest{
-		Address: filter.AddressIn[0],
-		Chain:   "polygon-network",
-		Token:   "matic",
+		Address: filter.AddressEq,
+		Chain:   filter.ChainEq,
+		Token:   filter.TokenEq,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("cryptoServiceClient.GetBalance: %w", err)
 	}
 
-	return &model.BalancesPagination{
-		Balances: []float64{balanceResp.GetBalance()},
+	return &model.Balance{
+		Balance: balanceResp.GetBalance(),
 	}, nil
 }

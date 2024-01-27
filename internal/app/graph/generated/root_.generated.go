@@ -42,8 +42,8 @@ type DirectiveRoot struct {
 }
 
 type ComplexityRoot struct {
-	BalancesPagination struct {
-		Balances func(childComplexity int) int
+	Balance struct {
+		Balance func(childComplexity int) int
 	}
 
 	CheckInvoicePayload struct {
@@ -96,7 +96,7 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Balances func(childComplexity int, filter model.BalancesFilter) int
+		Balance  func(childComplexity int, filter model.BalanceFilter) int
 		Invoices func(childComplexity int, filter model.InvoicesFilter) int
 		Me       func(childComplexity int) int
 		Wallets  func(childComplexity int, filter model.WalletsFilter) int
@@ -140,12 +140,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	_ = ec
 	switch typeName + "." + field {
 
-	case "BalancesPagination.balances":
-		if e.complexity.BalancesPagination.Balances == nil {
+	case "Balance.balance":
+		if e.complexity.Balance.Balance == nil {
 			break
 		}
 
-		return e.complexity.BalancesPagination.Balances(childComplexity), true
+		return e.complexity.Balance.Balance(childComplexity), true
 
 	case "CheckInvoicePayload.invoice":
 		if e.complexity.CheckInvoicePayload.Invoice == nil {
@@ -347,17 +347,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.SignUp(childComplexity, args["input"].(model.SignUpInput)), true
 
-	case "Query.balances":
-		if e.complexity.Query.Balances == nil {
+	case "Query.balance":
+		if e.complexity.Query.Balance == nil {
 			break
 		}
 
-		args, err := ec.field_Query_balances_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_balance_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.Balances(childComplexity, args["filter"].(model.BalancesFilter)), true
+		return e.complexity.Query.Balance(childComplexity, args["filter"].(model.BalanceFilter)), true
 
 	case "Query.invoices":
 		if e.complexity.Query.Invoices == nil {
@@ -447,7 +447,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	rc := graphql.GetOperationContext(ctx)
 	ec := executionContext{rc, e, 0, 0, make(chan graphql.DeferredResult)}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
-		ec.unmarshalInputBalancesFilter,
+		ec.unmarshalInputBalanceFilter,
 		ec.unmarshalInputCheckInvoiceInput,
 		ec.unmarshalInputCreateInvoiceInput,
 		ec.unmarshalInputInvoicesFilter,
@@ -627,15 +627,17 @@ type SignUpPayload {
     clientId: String!
 }`, BuiltIn: false},
 	{Name: "../../../../api/graphql/query/balance.query.graphql", Input: `extend type Query {
-    balances(filter: BalancesFilter!): BalancesPagination!
+    balance(filter: BalanceFilter!): Balance!
 }
 
-input BalancesFilter {
-    addressIn: [String!]
+input BalanceFilter {
+    addressEq: String!
+    chainEq: String!
+    tokenEq: String!
 }
 
-type BalancesPagination {
-    balances: [Float!]
+type Balance {
+    balance: Float!
 }`, BuiltIn: false},
 	{Name: "../../../../api/graphql/query/invoices.query.graphql", Input: `extend type Query {
     invoices(filter: InvoicesFilter!): InvoicesPagination!
