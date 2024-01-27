@@ -5,7 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="caeba462-997f-4b14-ad34-80612e361d2d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/graphql/types/wallet.graphql" beforeDir="false" afterPath="$PROJECT_DIR$/api/graphql/types/wallet.graphql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/crypto-service/crypto-service.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/crypto-service/crypto-service.pb.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/crypto-service/crypto-service.pb.gw.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/crypto-service/crypto-service.pb.gw.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

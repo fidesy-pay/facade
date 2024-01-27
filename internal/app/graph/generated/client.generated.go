@@ -253,6 +253,8 @@ func (ec *executionContext) fieldContext_Client_wallets(ctx context.Context, fie
 				return ec.fieldContext_Wallet_address(ctx, field)
 			case "balance":
 				return ec.fieldContext_Wallet_balance(ctx, field)
+			case "chain":
+				return ec.fieldContext_Wallet_chain(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Wallet", field.Name)
 		},

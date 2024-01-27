@@ -118,6 +118,7 @@ type ComplexityRoot struct {
 	Wallet struct {
 		Address func(childComplexity int) int
 		Balance func(childComplexity int) int
+		Chain   func(childComplexity int) int
 	}
 
 	WalletsPagination struct {
@@ -432,6 +433,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Wallet.Balance(childComplexity), true
 
+	case "Wallet.chain":
+		if e.complexity.Wallet.Chain == nil {
+			break
+		}
+
+		return e.complexity.Wallet.Chain(childComplexity), true
+
 	case "WalletsPagination.items":
 		if e.complexity.WalletsPagination.Items == nil {
 			break
@@ -699,6 +707,7 @@ type Mutation`, BuiltIn: false},
 	{Name: "../../../../api/graphql/types/wallet.graphql", Input: `type Wallet @goModel(model: "github.com/fidesy-pay/facade/pkg/crypto-service.Wallet") {
     address: String!
     balance: Float!
+    chain: String!
 }`, BuiltIn: false},
 }
 var parsedSchema = gqlparser.MustLoadSchema(sources...)

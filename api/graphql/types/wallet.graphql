@@ -1,4 +1,5 @@
 type Wallet @goModel(model: "github.com/fidesy-pay/facade/pkg/crypto-service.Wallet") {
     address: String!
     balance: Float!
+    chain: String!
 }
