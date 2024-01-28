@@ -4,3 +4,6 @@ directive @goModel(model: String, models: [String!]) on OBJECT
     | ENUM
     | INTERFACE
     | UNION
+
+directive @goField(forceResolver: Boolean, name: String, omittable: Boolean) on INPUT_FIELD_DEFINITION
+    | FIELD_DEFINITION

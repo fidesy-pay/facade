@@ -1,5 +1,5 @@
 extend type Query {
-    invoices(filter: InvoicesFilter!): InvoicesPagination!
+    invoices(filter: InvoicesFilter): InvoicesPagination!
 }
 
 input InvoicesFilter {

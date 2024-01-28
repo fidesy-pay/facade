@@ -24,9 +24,9 @@ type MutationResolver interface {
 }
 type QueryResolver interface {
 	Balance(ctx context.Context, filter model.BalanceFilter) (*model.Balance, error)
-	Invoices(ctx context.Context, filter model.InvoicesFilter) (*model.InvoicesPagination, error)
+	Invoices(ctx context.Context, filter *model.InvoicesFilter) (*model.InvoicesPagination, error)
 	Me(ctx context.Context) (*clients_service.Client, error)
-	Wallets(ctx context.Context, filter model.WalletsFilter) (*model.WalletsPagination, error)
+	Wallets(ctx context.Context, filter *model.WalletsFilter) (*model.WalletsPagination, error)
 }
 
 // endregion ************************** generated!.gotpl **************************
@@ -96,10 +96,10 @@ func (ec *executionContext) field_Query_balance_args(ctx context.Context, rawArg
 func (ec *executionContext) field_Query_invoices_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 model.InvoicesFilter
+	var arg0 *model.InvoicesFilter
 	if tmp, ok := rawArgs["filter"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("filter"))
-		arg0, err = ec.unmarshalNInvoicesFilter2githubᚗcomᚋfidesyᚑpayᚋfacadeᚋinternalᚋpkgᚋmodelᚐInvoicesFilter(ctx, tmp)
+		arg0, err = ec.unmarshalOInvoicesFilter2ᚖgithubᚗcomᚋfidesyᚑpayᚋfacadeᚋinternalᚋpkgᚋmodelᚐInvoicesFilter(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -111,10 +111,10 @@ func (ec *executionContext) field_Query_invoices_args(ctx context.Context, rawAr
 func (ec *executionContext) field_Query_wallets_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 model.WalletsFilter
+	var arg0 *model.WalletsFilter
 	if tmp, ok := rawArgs["filter"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("filter"))
-		arg0, err = ec.unmarshalNWalletsFilter2githubᚗcomᚋfidesyᚑpayᚋfacadeᚋinternalᚋpkgᚋmodelᚐWalletsFilter(ctx, tmp)
+		arg0, err = ec.unmarshalOWalletsFilter2ᚖgithubᚗcomᚋfidesyᚑpayᚋfacadeᚋinternalᚋpkgᚋmodelᚐWalletsFilter(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -224,8 +224,6 @@ func (ec *executionContext) fieldContext_Mutation_login(ctx context.Context, fie
 			switch field.Name {
 			case "token":
 				return ec.fieldContext_LoginPayload_token(ctx, field)
-			case "clientId":
-				return ec.fieldContext_LoginPayload_clientId(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type LoginPayload", field.Name)
 		},
@@ -285,8 +283,6 @@ func (ec *executionContext) fieldContext_Mutation_signUp(ctx context.Context, fi
 			switch field.Name {
 			case "token":
 				return ec.fieldContext_SignUpPayload_token(ctx, field)
-			case "clientId":
-				return ec.fieldContext_SignUpPayload_clientId(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type SignUpPayload", field.Name)
 		},
@@ -378,7 +374,7 @@ func (ec *executionContext) _Query_invoices(ctx context.Context, field graphql.C
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Invoices(rctx, fc.Args["filter"].(model.InvoicesFilter))
+		return ec.resolvers.Query().Invoices(rctx, fc.Args["filter"].(*model.InvoicesFilter))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -495,7 +491,7 @@ func (ec *executionContext) _Query_wallets(ctx context.Context, field graphql.Co
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Wallets(rctx, fc.Args["filter"].(model.WalletsFilter))
+		return ec.resolvers.Query().Wallets(rctx, fc.Args["filter"].(*model.WalletsFilter))
 	})
 	if err != nil {
 		ec.Error(ctx, err)

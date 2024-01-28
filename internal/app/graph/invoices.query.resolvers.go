@@ -8,16 +8,23 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/fidesy-pay/facade/internal/pkg/middleware/auth"
 	"github.com/fidesy-pay/facade/internal/pkg/model"
 	invoicesservice "github.com/fidesy-pay/facade/internal/pkg/services/invoices-service"
 )
 
 // Invoices is the resolver for the invoices field.
-func (r *queryResolver) Invoices(ctx context.Context, filter model.InvoicesFilter) (*model.InvoicesPagination, error) {
-	invoices, err := r.invoicesService.ListInvoices(ctx, invoicesservice.ListInvoicesFilter{
-		IDIn:       filter.IDIn,
-		ClientIDIn: filter.ClientIDIn,
-	})
+func (r *queryResolver) Invoices(ctx context.Context, filter *model.InvoicesFilter) (*model.InvoicesPagination, error) {
+	session := auth.GetSession(ctx)
+
+	listInvoicesFilter := invoicesservice.ListInvoicesFilter{}
+	if filter != nil && len(filter.IDIn) > 0 {
+		listInvoicesFilter.IDIn = filter.IDIn
+	} else {
+		listInvoicesFilter.ClientIDIn = []string{session.ClientID}
+	}
+
+	invoices, err := r.invoicesService.ListInvoices(ctx, listInvoicesFilter)
 	if err != nil {
 		return nil, fmt.Errorf("invoicesService.ListInvoices: %w", err)
 	}

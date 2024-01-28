@@ -31,6 +31,40 @@ var _ = runtime.String
 var _ = utilities.NewDoubleArray
 var _ = metadata.Join
 
+func request_ClientsService_CreateClient_0(ctx context.Context, marshaler runtime.Marshaler, client ClientsServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq CreateClientRequest
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := client.CreateClient(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_ClientsService_CreateClient_0(ctx context.Context, marshaler runtime.Marshaler, server ClientsServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq CreateClientRequest
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := server.CreateClient(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
 func request_ClientsService_GetClient_0(ctx context.Context, marshaler runtime.Marshaler, client ClientsServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq GetClientRequest
 	var metadata runtime.ServerMetadata
@@ -71,6 +105,31 @@ func local_request_ClientsService_GetClient_0(ctx context.Context, marshaler run
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterClientsServiceHandlerFromEndpoint instead.
 func RegisterClientsServiceHandlerServer(ctx context.Context, mux *runtime.ServeMux, server ClientsServiceServer) error {
 
+	mux.Handle("POST", pattern_ClientsService_CreateClient_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/clients_service.ClientsService/CreateClient", runtime.WithHTTPPathPattern("/clients_service.ClientsService.CreateClient"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_ClientsService_CreateClient_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ClientsService_CreateClient_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	mux.Handle("POST", pattern_ClientsService_GetClient_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -79,7 +138,7 @@ func RegisterClientsServiceHandlerServer(ctx context.Context, mux *runtime.Serve
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/clients_service.ClientsService/GetClient", runtime.WithHTTPPathPattern("/client"))
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/clients_service.ClientsService/GetClient", runtime.WithHTTPPathPattern("/clients_service.ClientsService.GetClient"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -137,13 +196,35 @@ func RegisterClientsServiceHandler(ctx context.Context, mux *runtime.ServeMux, c
 // "ClientsServiceClient" to call the correct interceptors.
 func RegisterClientsServiceHandlerClient(ctx context.Context, mux *runtime.ServeMux, client ClientsServiceClient) error {
 
+	mux.Handle("POST", pattern_ClientsService_CreateClient_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/clients_service.ClientsService/CreateClient", runtime.WithHTTPPathPattern("/clients_service.ClientsService.CreateClient"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_ClientsService_CreateClient_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_ClientsService_CreateClient_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	mux.Handle("POST", pattern_ClientsService_GetClient_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
 		var err error
 		var annotatedContext context.Context
-		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/clients_service.ClientsService/GetClient", runtime.WithHTTPPathPattern("/client"))
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/clients_service.ClientsService/GetClient", runtime.WithHTTPPathPattern("/clients_service.ClientsService.GetClient"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -163,9 +244,13 @@ func RegisterClientsServiceHandlerClient(ctx context.Context, mux *runtime.Serve
 }
 
 var (
-	pattern_ClientsService_GetClient_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"client"}, ""))
+	pattern_ClientsService_CreateClient_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"clients_service.ClientsService.CreateClient"}, ""))
+
+	pattern_ClientsService_GetClient_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"clients_service.ClientsService.GetClient"}, ""))
 )
 
 var (
+	forward_ClientsService_CreateClient_0 = runtime.ForwardResponseMessage
+
 	forward_ClientsService_GetClient_0 = runtime.ForwardResponseMessage
 )

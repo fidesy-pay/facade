@@ -1,5 +1,5 @@
 extend type Query {
-    wallets(filter: WalletsFilter!): WalletsPagination!
+    wallets(filter: WalletsFilter): WalletsPagination!
 }
 
 input WalletsFilter {

@@ -36,6 +36,7 @@ type ResolverRoot interface {
 	InvoiceMutations() InvoiceMutationsResolver
 	Mutation() MutationResolver
 	Query() QueryResolver
+	Wallet() WalletResolver
 }
 
 type DirectiveRoot struct {
@@ -85,8 +86,7 @@ type ComplexityRoot struct {
 	}
 
 	LoginPayload struct {
-		ClientID func(childComplexity int) int
-		Token    func(childComplexity int) int
+		Token func(childComplexity int) int
 	}
 
 	Mutation struct {
@@ -97,14 +97,13 @@ type ComplexityRoot struct {
 
 	Query struct {
 		Balance  func(childComplexity int, filter model.BalanceFilter) int
-		Invoices func(childComplexity int, filter model.InvoicesFilter) int
+		Invoices func(childComplexity int, filter *model.InvoicesFilter) int
 		Me       func(childComplexity int) int
-		Wallets  func(childComplexity int, filter model.WalletsFilter) int
+		Wallets  func(childComplexity int, filter *model.WalletsFilter) int
 	}
 
 	SignUpPayload struct {
-		ClientID func(childComplexity int) int
-		Token    func(childComplexity int) int
+		Token func(childComplexity int) int
 	}
 
 	TokenClaims struct {
@@ -303,13 +302,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.InvoicesPagination.Items(childComplexity), true
 
-	case "LoginPayload.clientId":
-		if e.complexity.LoginPayload.ClientID == nil {
-			break
-		}
-
-		return e.complexity.LoginPayload.ClientID(childComplexity), true
-
 	case "LoginPayload.token":
 		if e.complexity.LoginPayload.Token == nil {
 			break
@@ -370,7 +362,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Invoices(childComplexity, args["filter"].(model.InvoicesFilter)), true
+		return e.complexity.Query.Invoices(childComplexity, args["filter"].(*model.InvoicesFilter)), true
 
 	case "Query.me":
 		if e.complexity.Query.Me == nil {
@@ -389,14 +381,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Wallets(childComplexity, args["filter"].(model.WalletsFilter)), true
-
-	case "SignUpPayload.clientId":
-		if e.complexity.SignUpPayload.ClientID == nil {
-			break
-		}
-
-		return e.complexity.SignUpPayload.ClientID(childComplexity), true
+		return e.complexity.Query.Wallets(childComplexity, args["filter"].(*model.WalletsFilter)), true
 
 	case "SignUpPayload.token":
 		if e.complexity.SignUpPayload.Token == nil {
@@ -565,7 +550,10 @@ var sources = []*ast.Source{
     | SCALAR
     | ENUM
     | INTERFACE
-    | UNION`, BuiltIn: false},
+    | UNION
+
+directive @goField(forceResolver: Boolean, name: String, omittable: Boolean) on INPUT_FIELD_DEFINITION
+    | FIELD_DEFINITION`, BuiltIn: false},
 	{Name: "../../../../api/graphql/enum/invoice_status.graphql", Input: `enum InvoiceStatus {
   UNKNOWN_STATUS
   NEW
@@ -584,7 +572,6 @@ type InvoiceMutations {
 }
 
 input CreateInvoiceInput {
-    client_id: String!
     usd_amount: Float!
 }
 type CreateInvoicePayload {
@@ -619,7 +606,6 @@ input LoginInput {
 
 type LoginPayload {
     token: String!
-    clientId: String!
 }`, BuiltIn: false},
 	{Name: "../../../../api/graphql/mutation/signup.graphql", Input: `extend type Mutation {
     signUp(input: SignUpInput!): SignUpPayload!
@@ -632,7 +618,6 @@ input SignUpInput {
 
 type SignUpPayload {
     token: String!
-    clientId: String!
 }`, BuiltIn: false},
 	{Name: "../../../../api/graphql/query/balance.query.graphql", Input: `extend type Query {
     balance(filter: BalanceFilter!): Balance!
@@ -648,7 +633,7 @@ type Balance {
     balance: Float!
 }`, BuiltIn: false},
 	{Name: "../../../../api/graphql/query/invoices.query.graphql", Input: `extend type Query {
-    invoices(filter: InvoicesFilter!): InvoicesPagination!
+    invoices(filter: InvoicesFilter): InvoicesPagination!
 }
 
 input InvoicesFilter {
@@ -663,7 +648,7 @@ type InvoicesPagination {
     me: Client!
 }`, BuiltIn: false},
 	{Name: "../../../../api/graphql/query/wallets.query.graphql", Input: `extend type Query {
-    wallets(filter: WalletsFilter!): WalletsPagination!
+    wallets(filter: WalletsFilter): WalletsPagination!
 }
 
 input WalletsFilter {
@@ -688,8 +673,8 @@ type Mutation`, BuiltIn: false},
     api_key: String!
     created_at: Time!
 
-    wallets: [Wallet!] @deprecated
-    invoices: [Invoice]! @deprecated
+    wallets: [Wallet!]
+    invoices: [Invoice]!
 }`, BuiltIn: false},
 	{Name: "../../../../api/graphql/types/invoice.graphql", Input: `type Invoice @goModel(model: "github.com/fidesy-pay/facade/pkg/invoices-service.Invoice") {
     id: String!
@@ -706,7 +691,7 @@ type Mutation`, BuiltIn: false},
 }`, BuiltIn: false},
 	{Name: "../../../../api/graphql/types/wallet.graphql", Input: `type Wallet @goModel(model: "github.com/fidesy-pay/facade/pkg/crypto-service.Wallet") {
     address: String!
-    balance: Float!
+    balance: Float! @goField(forceResolver: true)
     chain: String!
 }`, BuiltIn: false},
 }

@@ -30,7 +30,6 @@ type CheckInvoicePayload struct {
 }
 
 type CreateInvoiceInput struct {
-	ClientID  string  `json:"client_id"`
 	UsdAmount float64 `json:"usd_amount"`
 }
 
@@ -53,8 +52,7 @@ type LoginInput struct {
 }
 
 type LoginPayload struct {
-	Token    string `json:"token"`
-	ClientID string `json:"clientId"`
+	Token string `json:"token"`
 }
 
 type SignUpInput struct {
@@ -63,8 +61,7 @@ type SignUpInput struct {
 }
 
 type SignUpPayload struct {
-	Token    string `json:"token"`
-	ClientID string `json:"clientId"`
+	Token string `json:"token"`
 }
 
 type UpdateInvoiceInput struct {

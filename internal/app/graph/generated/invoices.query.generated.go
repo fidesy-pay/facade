@@ -177,11 +177,6 @@ func (ec *executionContext) _InvoicesPagination(ctx context.Context, sel ast.Sel
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) unmarshalNInvoicesFilter2githubᚗcomᚋfidesyᚑpayᚋfacadeᚋinternalᚋpkgᚋmodelᚐInvoicesFilter(ctx context.Context, v interface{}) (model.InvoicesFilter, error) {
-	res, err := ec.unmarshalInputInvoicesFilter(ctx, v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
 func (ec *executionContext) marshalNInvoicesPagination2githubᚗcomᚋfidesyᚑpayᚋfacadeᚋinternalᚋpkgᚋmodelᚐInvoicesPagination(ctx context.Context, sel ast.SelectionSet, v model.InvoicesPagination) graphql.Marshaler {
 	return ec._InvoicesPagination(ctx, sel, &v)
 }
@@ -194,6 +189,14 @@ func (ec *executionContext) marshalNInvoicesPagination2ᚖgithubᚗcomᚋfidesy�
 		return graphql.Null
 	}
 	return ec._InvoicesPagination(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOInvoicesFilter2ᚖgithubᚗcomᚋfidesyᚑpayᚋfacadeᚋinternalᚋpkgᚋmodelᚐInvoicesFilter(ctx context.Context, v interface{}) (*model.InvoicesFilter, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputInvoicesFilter(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 // endregion ***************************** type.gotpl *****************************

@@ -24,19 +24,20 @@ func New(
 }
 
 func (s *Service) SignUp(ctx context.Context, input model.SignUpInput) (string, error) {
-	signUpResp, err := s.authClient.SignUp(ctx, &auth_service.SignUpRequest{
-		Username: input.Username,
-		Password: input.Password,
-	})
-	if err != nil {
-		return "", fmt.Errorf("authClient.SignUp: %w", err)
-	}
-
-	_, err = s.clientsClient.CreateClient(ctx, &clients_service.CreateClientRequest{
+	client, err := s.clientsClient.CreateClient(ctx, &clients_service.CreateClientRequest{
 		Username: input.Username,
 	})
 	if err != nil {
 		return "", fmt.Errorf("clientsClient.CreateClient: %w", err)
+	}
+
+	signUpResp, err := s.authClient.SignUp(ctx, &auth_service.SignUpRequest{
+		Username: input.Username,
+		Password: input.Password,
+		ClientId: client.Id,
+	})
+	if err != nil {
+		return "", fmt.Errorf("authClient.SignUp: %w", err)
 	}
 
 	return signUpResp.Token, nil

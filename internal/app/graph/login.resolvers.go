@@ -9,7 +9,6 @@ import (
 	"fmt"
 
 	"github.com/fidesy-pay/facade/internal/pkg/model"
-	clients_service "github.com/fidesy-pay/facade/pkg/clients-service"
 )
 
 // Login is the resolver for the login field.
@@ -19,18 +18,7 @@ func (r *mutationResolver) Login(ctx context.Context, input model.LoginInput) (*
 		return nil, fmt.Errorf("authService.Login: %w", err)
 	}
 
-	// TODO Is this a good approach ?
-	client, err := r.clientsClient.GetClient(ctx, &clients_service.GetClientRequest{
-		Filter: &clients_service.GetClientRequest_Filter{
-			UsernameIn: []string{input.Username},
-		},
-	})
-	if err != nil {
-		return nil, fmt.Errorf("clientsClient.GetClient: %w", err)
-	}
-
 	return &model.LoginPayload{
-		Token:    token,
-		ClientID: client.Id,
+		Token: token,
 	}, nil
 }

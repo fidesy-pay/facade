@@ -19,10 +19,6 @@ import (
 
 var Tracer opentracing.Tracer
 
-const (
-	UsernameCtxName = "username"
-)
-
 var noNeedAuth = []string{"Login", "SignUp"}
 
 func Auth(authClient auth_service.AuthServiceClient) func(handler http.Handler) http.Handler {
@@ -98,7 +94,11 @@ func Auth(authClient auth_service.AuthServiceClient) func(handler http.Handler) 
 				return
 			}
 
-			ctx = context.WithValue(ctx, UsernameCtxName, authResp.GetUsername())
+			session := Session{
+				Username: authResp.GetUsername(),
+				ClientID: authResp.GetClientId(),
+			}
+			ctx = context.WithValue(ctx, SessionCtxName, session)
 
 			r = r.WithContext(ctx)
 

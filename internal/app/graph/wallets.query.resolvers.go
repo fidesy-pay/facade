@@ -8,15 +8,18 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/fidesy-pay/facade/internal/pkg/middleware/auth"
 	"github.com/fidesy-pay/facade/internal/pkg/model"
 	crypto_service "github.com/fidesy-pay/facade/pkg/crypto-service"
 )
 
 // Wallets is the resolver for the wallets field.
-func (r *queryResolver) Wallets(ctx context.Context, filter model.WalletsFilter) (*model.WalletsPagination, error) {
+func (r *queryResolver) Wallets(ctx context.Context, filter *model.WalletsFilter) (*model.WalletsPagination, error) {
+	session := auth.GetSession(ctx)
+
 	walletsResp, err := r.cryptoServiceClient.ListWallets(ctx, &crypto_service.ListWalletsRequest{
 		Filter: &crypto_service.ListWalletsRequest_Filter{
-			ClientIdIn: filter.ClientIDIn,
+			ClientIdIn: []string{session.ClientID},
 		},
 	})
 	if err != nil {

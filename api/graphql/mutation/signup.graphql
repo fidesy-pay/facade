@@ -9,5 +9,4 @@ input SignUpInput {
 
 type SignUpPayload {
     token: String!
-    clientId: String!
 }

@@ -158,11 +158,6 @@ func (ec *executionContext) _WalletsPagination(ctx context.Context, sel ast.Sele
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) unmarshalNWalletsFilter2githubᚗcomᚋfidesyᚑpayᚋfacadeᚋinternalᚋpkgᚋmodelᚐWalletsFilter(ctx context.Context, v interface{}) (model.WalletsFilter, error) {
-	res, err := ec.unmarshalInputWalletsFilter(ctx, v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
 func (ec *executionContext) marshalNWalletsPagination2githubᚗcomᚋfidesyᚑpayᚋfacadeᚋinternalᚋpkgᚋmodelᚐWalletsPagination(ctx context.Context, sel ast.SelectionSet, v model.WalletsPagination) graphql.Marshaler {
 	return ec._WalletsPagination(ctx, sel, &v)
 }
@@ -175,6 +170,14 @@ func (ec *executionContext) marshalNWalletsPagination2ᚖgithubᚗcomᚋfidesy�
 		return graphql.Null
 	}
 	return ec._WalletsPagination(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalOWalletsFilter2ᚖgithubᚗcomᚋfidesyᚑpayᚋfacadeᚋinternalᚋpkgᚋmodelᚐWalletsFilter(ctx context.Context, v interface{}) (*model.WalletsFilter, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputWalletsFilter(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 // endregion ***************************** type.gotpl *****************************

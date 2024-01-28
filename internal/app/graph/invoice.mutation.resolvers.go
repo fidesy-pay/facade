@@ -9,12 +9,15 @@ import (
 	"fmt"
 
 	"github.com/fidesy-pay/facade/internal/app/graph/generated"
+	"github.com/fidesy-pay/facade/internal/pkg/middleware/auth"
 	"github.com/fidesy-pay/facade/internal/pkg/model"
 )
 
 // CreateInvoice is the resolver for the createInvoice field.
 func (r *invoiceMutationsResolver) CreateInvoice(ctx context.Context, obj *model.InvoiceMutations, input model.CreateInvoiceInput) (*model.CreateInvoicePayload, error) {
-	invoiceID, err := r.invoicesService.CreateInvoice(ctx, input.ClientID, input.UsdAmount)
+	session := auth.GetSession(ctx)
+
+	invoiceID, err := r.invoicesService.CreateInvoice(ctx, session.ClientID, input.UsdAmount)
 	if err != nil {
 		return nil, fmt.Errorf("invoicesService.CreateInvoice: %w", err)
 	}

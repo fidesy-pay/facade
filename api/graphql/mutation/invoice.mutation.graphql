@@ -9,7 +9,6 @@ type InvoiceMutations {
 }
 
 input CreateInvoiceInput {
-    client_id: String!
     usd_amount: Float!
 }
 type CreateInvoicePayload {

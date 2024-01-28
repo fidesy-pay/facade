@@ -14,11 +14,11 @@ import (
 
 // Me is the resolver for the me field.
 func (r *queryResolver) Me(ctx context.Context) (*clients_service.Client, error) {
-	username := ctx.Value(auth.UsernameCtxName)
+	session := auth.GetSession(ctx)
 
 	client, err := r.clientsClient.GetClient(ctx, &clients_service.GetClientRequest{
 		Filter: &clients_service.GetClientRequest_Filter{
-			UsernameIn: []string{username.(string)},
+			UsernameIn: []string{session.Username},
 		},
 	})
 	if err != nil {

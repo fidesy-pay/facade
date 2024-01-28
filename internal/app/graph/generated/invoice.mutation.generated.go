@@ -465,22 +465,13 @@ func (ec *executionContext) unmarshalInputCreateInvoiceInput(ctx context.Context
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"client_id", "usd_amount"}
+	fieldsInOrder := [...]string{"usd_amount"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
 			continue
 		}
 		switch k {
-		case "client_id":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("client_id"))
-			data, err := ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ClientID = data
 		case "usd_amount":
 			var err error
 
