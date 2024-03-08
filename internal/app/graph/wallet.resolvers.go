@@ -7,9 +7,9 @@ package graph
 import (
 	"context"
 	"fmt"
-	"github.com/fidesy-pay/facade/internal/pkg/model"
 
 	"github.com/fidesy-pay/facade/internal/app/graph/generated"
+	"github.com/fidesy-pay/facade/internal/pkg/model"
 	crypto_service "github.com/fidesy-pay/facade/pkg/crypto-service"
 )
 

@@ -83,26 +83,8 @@ func (s *Service) getInvoice(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	apiKey := r.Header.Get(APIKey)
-	if apiKey == "" {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
-
-	client, err := s.clientsClient.GetClient(r.Context(), &clients_service.GetClientRequest{
-		Filter: &clients_service.GetClientRequest_Filter{
-			ApiKeyIn: []string{apiKey},
-		},
-	})
-	if err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(err.Error()))
-		return
-	}
-
 	invoices, err := s.invoicesService.ListInvoices(r.Context(), invoicesservice.ListInvoicesFilter{
-		IDIn:       []string{invoiceID},
-		ClientIDIn: []string{client.Id},
+		IDIn: []string{invoiceID},
 	})
 	if err != nil {
 		w.WriteHeader(http.StatusUnauthorized)
@@ -110,7 +92,12 @@ func (s *Service) getInvoice(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	body, _ := json.Marshal(invoices)
+	if len(invoices) == 0 {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	body, _ := json.Marshal(InvoiceModelFromResp(invoices[0]))
 	w.WriteHeader(http.StatusOK)
 	w.Write(body)
 }

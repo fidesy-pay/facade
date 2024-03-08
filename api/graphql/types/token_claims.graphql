@@ -1,3 +1,0 @@
-type TokenClaims @goModel(model: "github.com/fidesy-pay/facade/pkg/auth-service.TokenClaims") {
-    username: String!
-}

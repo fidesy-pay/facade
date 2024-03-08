@@ -106,10 +106,6 @@ type ComplexityRoot struct {
 		Token func(childComplexity int) int
 	}
 
-	TokenClaims struct {
-		Username func(childComplexity int) int
-	}
-
 	UpdateInvoicePayload struct {
 		Invoice func(childComplexity int) int
 	}
@@ -389,13 +385,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.SignUpPayload.Token(childComplexity), true
-
-	case "TokenClaims.username":
-		if e.complexity.TokenClaims.Username == nil {
-			break
-		}
-
-		return e.complexity.TokenClaims.Username(childComplexity), true
 
 	case "UpdateInvoicePayload.invoice":
 		if e.complexity.UpdateInvoicePayload.Invoice == nil {
@@ -685,9 +674,6 @@ type Mutation`, BuiltIn: false},
     status: InvoiceStatus!
     address: String!
     created_at: Time!
-}`, BuiltIn: false},
-	{Name: "../../../../api/graphql/types/token_claims.graphql", Input: `type TokenClaims @goModel(model: "github.com/fidesy-pay/facade/pkg/auth-service.TokenClaims") {
-    username: String!
 }`, BuiltIn: false},
 	{Name: "../../../../api/graphql/types/wallet.graphql", Input: `type Wallet @goModel(model: "github.com/fidesy-pay/facade/pkg/crypto-service.Wallet") {
     address: String!
