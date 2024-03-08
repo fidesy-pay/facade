@@ -15,7 +15,7 @@ import (
 	clients_service "github.com/fidesy-pay/facade/pkg/clients-service"
 	crypto_service "github.com/fidesy-pay/facade/pkg/crypto-service"
 	invoices_service "github.com/fidesy-pay/facade/pkg/invoices-service"
-	"github.com/fidesyx/platform/pkg/scratch"
+	"github.com/fidesy/sdk/common/grpc"
 	"github.com/go-chi/chi"
 	"github.com/opentracing/opentracing-go"
 	"github.com/rs/cors"
@@ -55,44 +55,48 @@ func main() {
 	defer closer.Close()
 	auth.Tracer = tracer
 
-	// just init scratch
-	_, err := scratch.New(ctx)
+	// just init service
+	_, err = grpc.NewServer(
+		grpc.WithDomainNameService(ctx, "domain-name-service:10000"),
+		grpc.WithGraylog("graylog:5555"),
+	)
 	if err != nil {
 		log.Fatalf("scratch.New: %v", err)
 	}
 
 	// clients
-	authClient, err := scratch.NewClient[auth_service.AuthServiceClient](
+
+	authClient, err := grpc.NewClient[auth_service.AuthServiceClient](
 		ctx,
 		auth_service.NewAuthServiceClient,
-		"fidesy:///auth-service",
+		"rpc:///auth-service",
 	)
 	if err != nil {
 		log.Fatalf("NewAuthClient: %v", err)
 	}
 
-	invoicesClient, err := scratch.NewClient[invoices_service.InvoicesServiceClient](
+	invoicesClient, err := grpc.NewClient[invoices_service.InvoicesServiceClient](
 		ctx,
 		invoices_service.NewInvoicesServiceClient,
-		"fidesy:///invoices-service",
+		"rpc:///invoices-service",
 	)
 	if err != nil {
 		log.Fatalf("NewInvoicesClient: %v", err)
 	}
 
-	clientsClient, err := scratch.NewClient[clients_service.ClientsServiceClient](
+	clientsClient, err := grpc.NewClient[clients_service.ClientsServiceClient](
 		ctx,
 		clients_service.NewClientsServiceClient,
-		"fidesy:///clients-service",
+		"rpc:///clients-service",
 	)
 	if err != nil {
 		log.Fatalf("NewClientsClient: %v", err)
 	}
 
-	cryptoServiceClient, err := scratch.NewClient[crypto_service.CryptoServiceClient](
+	cryptoServiceClient, err := grpc.NewClient[crypto_service.CryptoServiceClient](
 		ctx,
 		crypto_service.NewCryptoServiceClient,
-		"fidesy:///crypto-service",
+		"rpc:///crypto-service",
 	)
 	if err != nil {
 		log.Fatalf("NewCryptoClient: %v", err)
