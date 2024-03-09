@@ -28,4 +28,4 @@ PHONY: run
 run:
 	make clean
 	make build
-	docker run --name ${PROJECT_NAME} --network=zoo -dp 7090:7090 -e PORT=7090 -e GRPC_PORT=7099 -e PROXY_PORT=7091 -e SWAGGER_PORT=7092 -e METRICS_PORT=7093 -e APP_NAME=${PROJECT_NAME} -e ENV=production ${PROJECT_NAME}
+	docker run --name ${PROJECT_NAME} --network=zoo -dp 7090:7090 -e PORT=7090 -e GRPC_PORT=7099 -e PROXY_PORT=7091 -e SWAGGER_PORT=7092 -e METRICS_PORT=7093 -e APP_NAME=${PROJECT_NAME} -e ENV=local ${PROJECT_NAME}

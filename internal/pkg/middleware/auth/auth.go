@@ -19,7 +19,7 @@ import (
 
 var Tracer opentracing.Tracer
 
-var noNeedAuth = []string{"Login", "SignUp"}
+var noNeedAuth = []string{"Login", "SignUp", "UpdateInvoice"}
 
 func Auth(authClient auth_service.AuthServiceClient) func(handler http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
