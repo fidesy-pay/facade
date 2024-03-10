@@ -67,6 +67,7 @@ jobs:
           source vars.env
           
           PORT=15000
+          METRICS_PORT=15001
           
           docker build --tag $APP_NAME_STAGE .
           
@@ -77,9 +78,7 @@ jobs:
              -e ENV=STAGING \
              -e PORT=$PORT -p $PORT:$PORT \
              -e GRPC_PORT=$((RANDOM % (65000 - 5000 + 1) + 5000))  \
-             -e METRICS_PORT=$((RANDOM % (65000 - 5000 + 1) + 5000))  \
-             -e PROXY_PORT=$((RANDOM % (65000 - 5000 + 1) + 5000)) \
-             -e SWAGGER_PORT=$((RANDOM % (65000 - 5000 + 1) + 5000)) \
+             -e METRICS_PORT=$METRICS_PORT  \
               $APP_NAME_STAGE
 
   deploy:
@@ -92,6 +91,7 @@ jobs:
           source vars.env
           
           PORT=7090
+          METRICS_PORT=7091
           
           docker build --tag $APP_NAME .
           
@@ -102,7 +102,5 @@ jobs:
              -e ENV=PRODUCTION \
              -e PORT=$PORT -p $PORT:$PORT \
              -e GRPC_PORT=$((RANDOM % (65000 - 5000 + 1) + 5000)) \
-             -e METRICS_PORT=$((RANDOM % (65000 - 5000 + 1) + 5000)) \
-             -e PROXY_PORT=$((RANDOM % (65000 - 5000 + 1) + 5000)) \
-             -e SWAGGER_PORT=$((RANDOM % (65000 - 5000 + 1) + 5000)) \
+             -e METRICS_PORT=$METRICS_PORT \
               $APP_NAME

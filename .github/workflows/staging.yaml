@@ -71,8 +71,6 @@ jobs:
             -e PORT=$PORT -p $PORT:$PORT \
             -e GRPC_PORT=$((RANDOM % (65000 - 5000 + 1) + 5000)) \
             -e METRICS_PORT=$((RANDOM % (65000 - 5000 + 1) + 5000)) \
-            -e PROXY_PORT=$((RANDOM % (65000 - 5000 + 1) + 5000)) \
-            -e SWAGGER_PORT=$((RANDOM % (65000 - 5000 + 1) + 5000)) \
              $APP_NAME
           
           echo http://${{ vars.SERVER_HOST }}:$PORT/

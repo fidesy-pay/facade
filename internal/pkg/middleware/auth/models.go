@@ -15,6 +15,12 @@ type GraphQLRequestBody struct {
 type CapturingResponseWriter struct {
 	http.ResponseWriter
 	CapturedBody []byte
+	StatusCode   int
+}
+
+func (c *CapturingResponseWriter) WriteHeader(statusCode int) {
+	c.ResponseWriter.WriteHeader(statusCode)
+	c.StatusCode = statusCode
 }
 
 func (c *CapturingResponseWriter) Write(b []byte) (int, error) {

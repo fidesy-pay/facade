@@ -2,11 +2,13 @@ package main
 
 import (
 	"context"
+	"fmt"
 	graphqlServerHandler "github.com/99designs/gqlgen/graphql/handler"
 	"github.com/fidesy-pay/facade/internal/app/graph"
 	"github.com/fidesy-pay/facade/internal/app/graph/generated"
 	"github.com/fidesy-pay/facade/internal/app/restapi"
 	"github.com/fidesy-pay/facade/internal/config"
+	"github.com/fidesy-pay/facade/internal/pkg/metrics"
 	"github.com/fidesy-pay/facade/internal/pkg/middleware/auth"
 	"github.com/fidesy-pay/facade/internal/pkg/sandbox"
 	authservice "github.com/fidesy-pay/facade/internal/pkg/services/auth-service"
@@ -16,6 +18,7 @@ import (
 	crypto_service "github.com/fidesy-pay/facade/pkg/crypto-service"
 	invoices_service "github.com/fidesy-pay/facade/pkg/invoices-service"
 	"github.com/fidesy/sdk/common/grpc"
+	"github.com/fidesy/sdk/common/logger"
 	"github.com/go-chi/chi"
 	"github.com/opentracing/opentracing-go"
 	"github.com/rs/cors"
@@ -128,15 +131,24 @@ func main() {
 	restapi.New(router, clientsClient, invoicesService)
 
 	graphqlServer := graphqlServerHandler.NewDefaultServer(schema)
-	//graphqlServer.AroundResponses(tracing.Tracing)
 
 	go func() {
 		//router.Handle("/", playground.Handler("GraphQL playground", "/query"))
 		router.Handle("/", sandbox.ApolloSandboxHandler("GraphQL", "/query"))
 		router.Handle("/query", graphqlServer)
 
-		log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
-		log.Fatal(http.ListenAndServe(":"+port, router))
+		logger.Info(fmt.Sprintf("connect to http://localhost:%s/ for GraphQL playground", port))
+
+		if err = http.ListenAndServe(":"+port, router); err != nil {
+			logger.Fatalf("%w", err)
+		}
+	}()
+
+	go func() {
+		metrics.Init()
+		if err = metrics.Run(ctx, os.Getenv("METRICS_PORT")); err != nil {
+			logger.Fatalf("metrics.Run: %w", err)
+		}
 	}()
 
 	<-ctx.Done()

@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/fidesy-pay/facade/internal/pkg/metrics"
 	auth_service "github.com/fidesy-pay/facade/pkg/auth-service"
 	"github.com/opentracing/opentracing-go"
 	"github.com/uber/jaeger-client-go"
@@ -24,8 +25,20 @@ var noNeedAuth = []string{"Login", "SignUp", "UpdateInvoice"}
 func Auth(authClient auth_service.AuthServiceClient) func(handler http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			start := time.Now()
+
 			// no need auth for rest api
-			if strings.Contains(r.URL.String(), "/api/") {
+			if strings.Contains(r.URL.String(), "/api/invoice") {
+				methodName := ""
+				if r.Method == http.MethodGet {
+					methodName = "GET /api/invoice"
+				} else {
+					methodName = "POST /api/invoice"
+				}
+
+				metrics.Requests.WithLabelValues(methodName).Inc()
+				defer metrics.ResponseTime.WithLabelValues(methodName).Observe(float64(time.Since(start).Milliseconds()))
+
 				next.ServeHTTP(w, r)
 				return
 			}
@@ -61,6 +74,8 @@ func Auth(authClient auth_service.AuthServiceClient) func(handler http.Handler) 
 			span := Tracer.StartSpan(*body.OperationName)
 			defer span.Finish()
 
+			metrics.Requests.WithLabelValues(*body.OperationName).Inc()
+
 			jaegerSpan, _ := span.(*jaeger.Span)
 			ctx := metadata.AppendToOutgoingContext(r.Context(), "x-trace-id", fmt.Sprint(jaegerSpan.SpanContext().TraceID()))
 			ctx = metadata.AppendToOutgoingContext(ctx, "x-span-id", fmt.Sprint(jaegerSpan.SpanContext().TraceID()))
@@ -78,6 +93,8 @@ func Auth(authClient auth_service.AuthServiceClient) func(handler http.Handler) 
 				r = r.WithContext(ctx)
 
 				next.ServeHTTP(rw, r)
+
+				metrics.ResponseTime.WithLabelValues(*body.OperationName).Observe(float64(time.Since(start).Milliseconds()))
 				return
 
 			}
@@ -89,8 +106,10 @@ func Auth(authClient auth_service.AuthServiceClient) func(handler http.Handler) 
 			})
 			if err != nil {
 				w.WriteHeader(http.StatusUnauthorized)
-				body, _ := json.Marshal(map[string]string{"error": err.Error()})
-				w.Write(body)
+				errBody, _ := json.Marshal(map[string]string{"error": err.Error()})
+				w.Write(errBody)
+
+				metrics.ResponseTime.WithLabelValues(*body.OperationName).Observe(float64(time.Since(start).Milliseconds()))
 				return
 			}
 
@@ -103,6 +122,7 @@ func Auth(authClient auth_service.AuthServiceClient) func(handler http.Handler) 
 			r = r.WithContext(ctx)
 
 			next.ServeHTTP(w, r)
+			metrics.ResponseTime.WithLabelValues(*body.OperationName).Observe(float64(time.Since(start).Milliseconds()))
 		})
 	}
 }
