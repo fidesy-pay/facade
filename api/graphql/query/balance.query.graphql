@@ -7,7 +7,3 @@ input BalanceFilter {
     chainEq: String!
     tokenEq: String!
 }
-
-type Balance {
-    balance: Float!
-}

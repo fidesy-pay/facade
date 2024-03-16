@@ -12,9 +12,11 @@ import (
 	"github.com/fidesy-pay/facade/internal/pkg/middleware/auth"
 	"github.com/fidesy-pay/facade/internal/pkg/sandbox"
 	authservice "github.com/fidesy-pay/facade/internal/pkg/services/auth-service"
+	cryptoservice "github.com/fidesy-pay/facade/internal/pkg/services/crypto-service"
 	invoicesservice "github.com/fidesy-pay/facade/internal/pkg/services/invoices-service"
 	auth_service "github.com/fidesy-pay/facade/pkg/auth-service"
 	clients_service "github.com/fidesy-pay/facade/pkg/clients-service"
+	coingecko_api "github.com/fidesy-pay/facade/pkg/coingecko-api"
 	crypto_service "github.com/fidesy-pay/facade/pkg/crypto-service"
 	invoices_service "github.com/fidesy-pay/facade/pkg/invoices-service"
 	"github.com/fidesy/sdk/common/grpc"
@@ -105,15 +107,26 @@ func main() {
 		log.Fatalf("NewCryptoClient: %v", err)
 	}
 
+	coinGeckoAPIClient, err := grpc.NewClient[coingecko_api.CoinGeckoAPIClient](
+		ctx,
+		coingecko_api.NewCoinGeckoAPIClient,
+		"rpc:///external-api",
+	)
+	if err != nil {
+		log.Fatalf("NewCoinGeckoAPIClient: %v", err)
+	}
+
 	// services
 	authService := authservice.New(authClient, clientsClient)
 	invoicesService := invoicesservice.New(invoicesClient)
+	cryptoService := cryptoservice.New(cryptoServiceClient, coinGeckoAPIClient)
 
 	resolver := graph.NewResolver(
-		graph.WithClientsClient(clientsClient),
-		graph.WithCryptoServiceClient(cryptoServiceClient),
-		graph.WithAuthService(authService),
-		graph.WithInvoicesService(invoicesService),
+		clientsClient,
+		cryptoServiceClient,
+		authService,
+		invoicesService,
+		cryptoService,
 	)
 
 	schema := generated.NewExecutableSchema(generated.Config{

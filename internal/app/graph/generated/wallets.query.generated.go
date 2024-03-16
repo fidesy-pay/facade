@@ -66,8 +66,6 @@ func (ec *executionContext) fieldContext_WalletsPagination_items(ctx context.Con
 			switch field.Name {
 			case "address":
 				return ec.fieldContext_Wallet_address(ctx, field)
-			case "balance":
-				return ec.fieldContext_Wallet_balance(ctx, field)
 			case "chain":
 				return ec.fieldContext_Wallet_chain(ctx, field)
 			}

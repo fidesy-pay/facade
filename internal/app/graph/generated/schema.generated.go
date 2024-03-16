@@ -25,6 +25,7 @@ type MutationResolver interface {
 type QueryResolver interface {
 	Balance(ctx context.Context, filter model.BalanceFilter) (*model.Balance, error)
 	Invoices(ctx context.Context, filter *model.InvoicesFilter) (*model.InvoicesPagination, error)
+	MainBalance(ctx context.Context) (*model.MainBalance, error)
 	Me(ctx context.Context) (*clients_service.Client, error)
 	Wallets(ctx context.Context, filter *model.WalletsFilter) (*model.WalletsPagination, error)
 }
@@ -340,8 +341,12 @@ func (ec *executionContext) fieldContext_Query_balance(ctx context.Context, fiel
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
+			case "token":
+				return ec.fieldContext_Balance_token(ctx, field)
 			case "balance":
 				return ec.fieldContext_Balance_balance(ctx, field)
+			case "usdBalance":
+				return ec.fieldContext_Balance_usdBalance(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Balance", field.Name)
 		},
@@ -415,6 +420,54 @@ func (ec *executionContext) fieldContext_Query_invoices(ctx context.Context, fie
 	if fc.Args, err = ec.field_Query_invoices_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_mainBalance(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_mainBalance(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().MainBalance(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.MainBalance)
+	fc.Result = res
+	return ec.marshalNMainBalance2ᚖgithubᚗcomᚋfidesyᚑpayᚋfacadeᚋinternalᚋpkgᚋmodelᚐMainBalance(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_mainBalance(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "usdBalance":
+				return ec.fieldContext_MainBalance_usdBalance(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type MainBalance", field.Name)
+		},
 	}
 	return fc, nil
 }
@@ -791,6 +844,28 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_invoices(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "mainBalance":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_mainBalance(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}

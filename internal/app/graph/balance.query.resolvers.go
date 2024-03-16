@@ -9,21 +9,19 @@ import (
 	"fmt"
 
 	"github.com/fidesy-pay/facade/internal/pkg/model"
-	crypto_service "github.com/fidesy-pay/facade/pkg/crypto-service"
+	cryptoservice "github.com/fidesy-pay/facade/internal/pkg/services/crypto-service"
 )
 
 // Balance is the resolver for the balance field.
 func (r *queryResolver) Balance(ctx context.Context, filter model.BalanceFilter) (*model.Balance, error) {
-	balanceResp, err := r.cryptoServiceClient.GetBalance(ctx, &crypto_service.GetBalanceRequest{
+	balance, err := r.cryptoService.GetBalance(ctx, cryptoservice.GetBalanceParams{
 		Address: filter.AddressEq,
 		Chain:   filter.ChainEq,
 		Token:   filter.TokenEq,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("cryptoServiceClient.GetBalance: %w", err)
+		return nil, fmt.Errorf("cryptoService.GetBalance: %w", err)
 	}
 
-	return &model.Balance{
-		Balance: balanceResp.GetBalance(),
-	}, nil
+	return balance, nil
 }

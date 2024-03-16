@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/fidesy-pay/facade/internal/pkg/model"
 	desc "github.com/fidesy-pay/facade/pkg/invoices-service"
+	"github.com/samber/lo"
 )
 
 type Service struct {
@@ -58,6 +59,7 @@ func (s *Service) CheckInvoice(ctx context.Context, input model.CheckInvoiceInpu
 type ListInvoicesFilter struct {
 	IDIn       []string
 	ClientIDIn []string
+	StatusIn   []model.InvoiceStatus
 }
 
 func (s *Service) ListInvoices(ctx context.Context, filter ListInvoicesFilter) ([]*desc.Invoice, error) {
@@ -68,6 +70,12 @@ func (s *Service) ListInvoices(ctx context.Context, filter ListInvoicesFilter) (
 
 	if len(filter.ClientIDIn) > 0 {
 		reqFilter.ClientIdIn = filter.ClientIDIn
+	}
+
+	if len(filter.StatusIn) > 0 {
+		reqFilter.InvoiceStatusIn = lo.Map(filter.StatusIn, func(status model.InvoiceStatus, index int) desc.InvoiceStatus {
+			return desc.InvoiceStatus(desc.InvoiceStatus_value[status.String()])
+		})
 	}
 
 	invoicesResp, err := s.invoicesClient.ListInvoices(ctx, &desc.ListInvoicesRequest{

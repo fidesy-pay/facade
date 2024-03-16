@@ -12,7 +12,9 @@ import (
 )
 
 type Balance struct {
-	Balance float64 `json:"balance"`
+	Token      string  `json:"token"`
+	Balance    float64 `json:"balance"`
+	UsdBalance float64 `json:"usdBalance"`
 }
 
 type BalanceFilter struct {
@@ -38,8 +40,9 @@ type CreateInvoicePayload struct {
 }
 
 type InvoicesFilter struct {
-	IDIn       []string `json:"idIn,omitempty"`
-	ClientIDIn []string `json:"clientIdIn,omitempty"`
+	IDIn       []string        `json:"idIn,omitempty"`
+	ClientIDIn []string        `json:"clientIdIn,omitempty"`
+	StatusIn   []InvoiceStatus `json:"statusIn,omitempty"`
 }
 
 type InvoicesPagination struct {
@@ -53,6 +56,10 @@ type LoginInput struct {
 
 type LoginPayload struct {
 	Token string `json:"token"`
+}
+
+type MainBalance struct {
+	UsdBalance float64 `json:"usdBalance"`
 }
 
 type SignUpInput struct {

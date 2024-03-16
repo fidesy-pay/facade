@@ -98,7 +98,7 @@ func (ec *executionContext) unmarshalInputInvoicesFilter(ctx context.Context, ob
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"idIn", "clientIdIn"}
+	fieldsInOrder := [...]string{"idIn", "clientIdIn", "statusIn"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -123,6 +123,15 @@ func (ec *executionContext) unmarshalInputInvoicesFilter(ctx context.Context, ob
 				return it, err
 			}
 			it.ClientIDIn = data
+		case "statusIn":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("statusIn"))
+			data, err := ec.unmarshalOInvoiceStatus2ᚕgithubᚗcomᚋfidesyᚑpayᚋfacadeᚋinternalᚋpkgᚋmodelᚐInvoiceStatusᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.StatusIn = data
 		}
 	}
 

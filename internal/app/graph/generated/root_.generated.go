@@ -36,7 +36,6 @@ type ResolverRoot interface {
 	InvoiceMutations() InvoiceMutationsResolver
 	Mutation() MutationResolver
 	Query() QueryResolver
-	Wallet() WalletResolver
 }
 
 type DirectiveRoot struct {
@@ -44,7 +43,9 @@ type DirectiveRoot struct {
 
 type ComplexityRoot struct {
 	Balance struct {
-		Balance func(childComplexity int) int
+		Balance    func(childComplexity int) int
+		Token      func(childComplexity int) int
+		UsdBalance func(childComplexity int) int
 	}
 
 	CheckInvoicePayload struct {
@@ -89,6 +90,10 @@ type ComplexityRoot struct {
 		Token func(childComplexity int) int
 	}
 
+	MainBalance struct {
+		UsdBalance func(childComplexity int) int
+	}
+
 	Mutation struct {
 		InvoiceMutations func(childComplexity int) int
 		Login            func(childComplexity int, input model.LoginInput) int
@@ -96,10 +101,11 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		Balance  func(childComplexity int, filter model.BalanceFilter) int
-		Invoices func(childComplexity int, filter *model.InvoicesFilter) int
-		Me       func(childComplexity int) int
-		Wallets  func(childComplexity int, filter *model.WalletsFilter) int
+		Balance     func(childComplexity int, filter model.BalanceFilter) int
+		Invoices    func(childComplexity int, filter *model.InvoicesFilter) int
+		MainBalance func(childComplexity int) int
+		Me          func(childComplexity int) int
+		Wallets     func(childComplexity int, filter *model.WalletsFilter) int
 	}
 
 	SignUpPayload struct {
@@ -112,7 +118,6 @@ type ComplexityRoot struct {
 
 	Wallet struct {
 		Address func(childComplexity int) int
-		Balance func(childComplexity int) int
 		Chain   func(childComplexity int) int
 	}
 
@@ -142,6 +147,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Balance.Balance(childComplexity), true
+
+	case "Balance.token":
+		if e.complexity.Balance.Token == nil {
+			break
+		}
+
+		return e.complexity.Balance.Token(childComplexity), true
+
+	case "Balance.usdBalance":
+		if e.complexity.Balance.UsdBalance == nil {
+			break
+		}
+
+		return e.complexity.Balance.UsdBalance(childComplexity), true
 
 	case "CheckInvoicePayload.invoice":
 		if e.complexity.CheckInvoicePayload.Invoice == nil {
@@ -305,6 +324,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.LoginPayload.Token(childComplexity), true
 
+	case "MainBalance.usdBalance":
+		if e.complexity.MainBalance.UsdBalance == nil {
+			break
+		}
+
+		return e.complexity.MainBalance.UsdBalance(childComplexity), true
+
 	case "Mutation.invoiceMutations":
 		if e.complexity.Mutation.InvoiceMutations == nil {
 			break
@@ -360,6 +386,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Invoices(childComplexity, args["filter"].(*model.InvoicesFilter)), true
 
+	case "Query.mainBalance":
+		if e.complexity.Query.MainBalance == nil {
+			break
+		}
+
+		return e.complexity.Query.MainBalance(childComplexity), true
+
 	case "Query.me":
 		if e.complexity.Query.Me == nil {
 			break
@@ -399,13 +432,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Wallet.Address(childComplexity), true
-
-	case "Wallet.balance":
-		if e.complexity.Wallet.Balance == nil {
-			break
-		}
-
-		return e.complexity.Wallet.Balance(childComplexity), true
 
 	case "Wallet.chain":
 		if e.complexity.Wallet.Chain == nil {
@@ -616,10 +642,6 @@ input BalanceFilter {
     addressEq: String!
     chainEq: String!
     tokenEq: String!
-}
-
-type Balance {
-    balance: Float!
 }`, BuiltIn: false},
 	{Name: "../../../../api/graphql/query/invoices.query.graphql", Input: `extend type Query {
     invoices(filter: InvoicesFilter): InvoicesPagination!
@@ -628,10 +650,14 @@ type Balance {
 input InvoicesFilter {
     idIn: [String!]
     clientIdIn: [String!]
+    statusIn: [InvoiceStatus!]
 }
 
 type InvoicesPagination {
     items: [Invoice!]
+}`, BuiltIn: false},
+	{Name: "../../../../api/graphql/query/main_balance.query.graphql", Input: `extend type Query {
+    mainBalance: MainBalance!
 }`, BuiltIn: false},
 	{Name: "../../../../api/graphql/query/me.query.graphql", Input: `extend type Query {
     me: Client!
@@ -656,6 +682,11 @@ type WalletsPagination {
 type Query
 
 type Mutation`, BuiltIn: false},
+	{Name: "../../../../api/graphql/types/balance.graphql", Input: `type Balance {
+    token: String!
+    balance: Float!
+    usdBalance: Float!
+}`, BuiltIn: false},
 	{Name: "../../../../api/graphql/types/client.graphql", Input: `type Client @goModel(model: "github.com/fidesy-pay/facade/pkg/clients-service.Client") {
     id: String!
     username: String!
@@ -675,9 +706,11 @@ type Mutation`, BuiltIn: false},
     address: String!
     created_at: Time!
 }`, BuiltIn: false},
+	{Name: "../../../../api/graphql/types/main_balance.graphql", Input: `type MainBalance {
+    usdBalance: Float!
+}`, BuiltIn: false},
 	{Name: "../../../../api/graphql/types/wallet.graphql", Input: `type Wallet @goModel(model: "github.com/fidesy-pay/facade/pkg/crypto-service.Wallet") {
     address: String!
-    balance: Float! @goField(forceResolver: true)
     chain: String!
 }`, BuiltIn: false},
 }
