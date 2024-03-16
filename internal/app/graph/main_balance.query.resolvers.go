@@ -7,13 +7,13 @@ package graph
 import (
 	"context"
 	"fmt"
-	"golang.org/x/sync/errgroup"
 	"sync"
 
 	"github.com/fidesy-pay/facade/internal/pkg/middleware/auth"
 	"github.com/fidesy-pay/facade/internal/pkg/model"
 	cryptoservice "github.com/fidesy-pay/facade/internal/pkg/services/crypto-service"
 	crypto_service "github.com/fidesy-pay/facade/pkg/crypto-service"
+	"golang.org/x/sync/errgroup"
 )
 
 // MainBalance is the resolver for the mainBalance field.

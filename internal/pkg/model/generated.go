@@ -92,11 +92,14 @@ type WalletsPagination struct {
 type InvoiceStatus string
 
 const (
-	InvoiceStatusUnknownStatus InvoiceStatus = "UNKNOWN_STATUS"
-	InvoiceStatusNew           InvoiceStatus = "NEW"
-	InvoiceStatusPending       InvoiceStatus = "PENDING"
-	InvoiceStatusFailed        InvoiceStatus = "FAILED"
-	InvoiceStatusSuccess       InvoiceStatus = "SUCCESS"
+	InvoiceStatusUnknownStatus   InvoiceStatus = "UNKNOWN_STATUS"
+	InvoiceStatusNew             InvoiceStatus = "NEW"
+	InvoiceStatusPending         InvoiceStatus = "PENDING"
+	InvoiceStatusFailed          InvoiceStatus = "FAILED"
+	InvoiceStatusSuccess         InvoiceStatus = "SUCCESS"
+	InvoiceStatusExpired         InvoiceStatus = "EXPIRED"
+	InvoiceStatusSendingToClient InvoiceStatus = "SENDING_TO_CLIENT"
+	InvoiceStatusManualControl   InvoiceStatus = "MANUAL_CONTROL"
 )
 
 var AllInvoiceStatus = []InvoiceStatus{
@@ -105,11 +108,14 @@ var AllInvoiceStatus = []InvoiceStatus{
 	InvoiceStatusPending,
 	InvoiceStatusFailed,
 	InvoiceStatusSuccess,
+	InvoiceStatusExpired,
+	InvoiceStatusSendingToClient,
+	InvoiceStatusManualControl,
 }
 
 func (e InvoiceStatus) IsValid() bool {
 	switch e {
-	case InvoiceStatusUnknownStatus, InvoiceStatusNew, InvoiceStatusPending, InvoiceStatusFailed, InvoiceStatusSuccess:
+	case InvoiceStatusUnknownStatus, InvoiceStatusNew, InvoiceStatusPending, InvoiceStatusFailed, InvoiceStatusSuccess, InvoiceStatusExpired, InvoiceStatusSendingToClient, InvoiceStatusManualControl:
 		return true
 	}
 	return false

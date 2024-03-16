@@ -575,6 +575,9 @@ directive @goField(forceResolver: Boolean, name: String, omittable: Boolean) on 
   PENDING
   FAILED
   SUCCESS
+  EXPIRED
+  SENDING_TO_CLIENT
+  MANUAL_CONTROL
 }`, BuiltIn: false},
 	{Name: "../../../../api/graphql/mutation/invoice.mutation.graphql", Input: `extend type Mutation {
     invoiceMutations: InvoiceMutations!
