@@ -70,6 +70,7 @@ type ComplexityRoot struct {
 		Chain       func(childComplexity int) int
 		CreatedAt   func(childComplexity int) int
 		Id          func(childComplexity int) int
+		Payer       func(childComplexity int) int
 		Status      func(childComplexity int) int
 		Token       func(childComplexity int) int
 		TokenAmount func(childComplexity int) int
@@ -245,6 +246,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Invoice.Id(childComplexity), true
+
+	case "Invoice.payer":
+		if e.complexity.Invoice.Payer == nil {
+			break
+		}
+
+		return e.complexity.Invoice.Payer(childComplexity), true
 
 	case "Invoice.status":
 		if e.complexity.Invoice.Status == nil {
@@ -708,6 +716,7 @@ type Mutation`, BuiltIn: false},
     status: InvoiceStatus!
     address: String!
     created_at: Time!
+    payer: Client
 }`, BuiltIn: false},
 	{Name: "../../../../api/graphql/types/main_balance.graphql", Input: `type MainBalance {
     usdBalance: Float!

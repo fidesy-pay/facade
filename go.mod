@@ -13,6 +13,7 @@ require (
 	github.com/samber/lo v1.39.0
 	github.com/uber/jaeger-client-go v2.30.0+incompatible
 	github.com/vektah/gqlparser/v2 v2.5.10
+	github.com/vikstrous/dataloadgen v0.0.6
 	golang.org/x/sync v0.6.0
 	google.golang.org/grpc v1.62.0
 	google.golang.org/protobuf v1.32.0
@@ -40,6 +41,8 @@ require (
 	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
 	github.com/urfave/cli/v2 v2.25.5 // indirect
 	github.com/xrash/smetrics v0.0.0-20201216005158-039620a65673 // indirect
+	go.opentelemetry.io/otel v1.11.1 // indirect
+	go.opentelemetry.io/otel/trace v1.11.1 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect

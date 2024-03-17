@@ -7,4 +7,5 @@ type Invoice @goModel(model: "github.com/fidesy-pay/facade/pkg/invoices-service.
     status: InvoiceStatus!
     address: String!
     created_at: Time!
+    payer: Client
 }

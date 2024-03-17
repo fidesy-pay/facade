@@ -5,6 +5,7 @@ package generated
 import (
 	"context"
 	"errors"
+	"fmt"
 	"strconv"
 	"sync"
 	"sync/atomic"
@@ -12,6 +13,7 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/fidesy-pay/facade/internal/pkg/model"
+	clients_service "github.com/fidesy-pay/facade/pkg/clients-service"
 	invoices_service "github.com/fidesy-pay/facade/pkg/invoices-service"
 	"github.com/vektah/gqlparser/v2/ast"
 )
@@ -22,6 +24,7 @@ type InvoiceResolver interface {
 	Status(ctx context.Context, obj *invoices_service.Invoice) (model.InvoiceStatus, error)
 
 	CreatedAt(ctx context.Context, obj *invoices_service.Invoice) (*time.Time, error)
+	Payer(ctx context.Context, obj *invoices_service.Invoice) (*clients_service.Client, error)
 }
 
 // endregion ************************** generated!.gotpl **************************
@@ -388,6 +391,61 @@ func (ec *executionContext) fieldContext_Invoice_created_at(ctx context.Context,
 	return fc, nil
 }
 
+func (ec *executionContext) _Invoice_payer(ctx context.Context, field graphql.CollectedField, obj *invoices_service.Invoice) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Invoice_payer(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Invoice().Payer(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*clients_service.Client)
+	fc.Result = res
+	return ec.marshalOClient2ᚖgithubᚗcomᚋfidesyᚑpayᚋfacadeᚋpkgᚋclientsᚑserviceᚐClient(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Invoice_payer(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Invoice",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Client_id(ctx, field)
+			case "username":
+				return ec.fieldContext_Client_username(ctx, field)
+			case "api_key":
+				return ec.fieldContext_Client_api_key(ctx, field)
+			case "created_at":
+				return ec.fieldContext_Client_created_at(ctx, field)
+			case "wallets":
+				return ec.fieldContext_Client_wallets(ctx, field)
+			case "invoices":
+				return ec.fieldContext_Client_invoices(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Client", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 // endregion **************************** field.gotpl *****************************
 
 // region    **************************** input.gotpl *****************************
@@ -490,6 +548,39 @@ func (ec *executionContext) _Invoice(ctx context.Context, sel ast.SelectionSet, 
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "payer":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Invoice_payer(ctx, field, obj)
 				return res
 			}
 

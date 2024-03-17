@@ -32,11 +32,19 @@ func (s *Service) CreateInvoice(ctx context.Context, clientID string, usdAmount 
 	return invoiceResp.GetId(), nil
 }
 
-func (s *Service) UpdateInvoice(ctx context.Context, input model.UpdateInvoiceInput) (*desc.Invoice, error) {
+type UpdateInvoiceParams struct {
+	ID            string
+	Chain         string
+	Token         string
+	PayerClientID *string
+}
+
+func (s *Service) UpdateInvoice(ctx context.Context, params UpdateInvoiceParams) (*desc.Invoice, error) {
 	invoiceResp, err := s.invoicesClient.UpdateInvoice(ctx, &desc.UpdateInvoiceRequest{
-		Id:    input.ID,
-		Chain: input.Chain,
-		Token: input.Token,
+		Id:            params.ID,
+		Chain:         params.Chain,
+		Token:         params.Token,
+		PayerClientId: params.PayerClientID,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("invoicesClient.UpdateInvoice: %w", err)

@@ -13,14 +13,17 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"slices"
 	"strings"
 	"time"
 )
 
 var Tracer opentracing.Tracer
 
-var noNeedAuth = []string{"Login", "SignUp", "UpdateInvoice"}
+var noNeedAuth = []string{
+	"login(input: $input) {",
+	"signUp(input: $input) {",
+	"updateInvoice(input: $input) {",
+}
 
 func Auth(authClient auth_service.AuthServiceClient) func(handler http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
@@ -85,7 +88,9 @@ func Auth(authClient auth_service.AuthServiceClient) func(handler http.Handler) 
 
 			w.Header().Set("x-trace-id", fmt.Sprint(jaegerSpan.SpanContext().TraceID()))
 
-			if slices.Contains(noNeedAuth, *body.OperationName) {
+			authToken := extractAuthorizationToken(r.Header)
+
+			if authToken == "" && !needAuth(*body.Query) {
 				rw := &CapturingResponseWriter{
 					ResponseWriter: w,
 				}
@@ -98,8 +103,6 @@ func Auth(authClient auth_service.AuthServiceClient) func(handler http.Handler) 
 				return
 
 			}
-
-			authToken := extractAuthorizationToken(r.Header)
 
 			authResp, err := authClient.ValidateToken(ctx, &auth_service.ValidateTokenRequest{
 				Token: authToken,
@@ -125,6 +128,16 @@ func Auth(authClient auth_service.AuthServiceClient) func(handler http.Handler) 
 			metrics.ResponseTime.WithLabelValues(*body.OperationName).Observe(float64(time.Since(start).Milliseconds()))
 		})
 	}
+}
+
+func needAuth(body string) bool {
+	for _, query := range noNeedAuth {
+		if strings.Contains(body, query) {
+			return false
+		}
+	}
+
+	return true
 }
 
 func extractAuthorizationToken(headers http.Header) string {

@@ -8,6 +8,7 @@ import (
 	"github.com/fidesy-pay/facade/internal/app/graph/generated"
 	"github.com/fidesy-pay/facade/internal/app/restapi"
 	"github.com/fidesy-pay/facade/internal/config"
+	"github.com/fidesy-pay/facade/internal/pkg/loaders"
 	"github.com/fidesy-pay/facade/internal/pkg/metrics"
 	"github.com/fidesy-pay/facade/internal/pkg/middleware/auth"
 	"github.com/fidesy-pay/facade/internal/pkg/sandbox"
@@ -145,10 +146,15 @@ func main() {
 
 	graphqlServer := graphqlServerHandler.NewDefaultServer(schema)
 
+	serverWithDataloader := loaders.Middleware(
+		graphqlServer,
+		clientsClient,
+	)
+
 	go func() {
 		//router.Handle("/", playground.Handler("GraphQL playground", "/query"))
 		router.Handle("/", sandbox.ApolloSandboxHandler("GraphQL", "/query"))
-		router.Handle("/query", graphqlServer)
+		router.Handle("/query", serverWithDataloader)
 
 		logger.Info(fmt.Sprintf("connect to http://localhost:%s/ for GraphQL playground", port))
 

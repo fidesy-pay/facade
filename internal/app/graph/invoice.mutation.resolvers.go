@@ -11,6 +11,7 @@ import (
 	"github.com/fidesy-pay/facade/internal/app/graph/generated"
 	"github.com/fidesy-pay/facade/internal/pkg/middleware/auth"
 	"github.com/fidesy-pay/facade/internal/pkg/model"
+	invoicesservice "github.com/fidesy-pay/facade/internal/pkg/services/invoices-service"
 )
 
 // CreateInvoice is the resolver for the createInvoice field.
@@ -29,7 +30,18 @@ func (r *invoiceMutationsResolver) CreateInvoice(ctx context.Context, obj *model
 
 // UpdateInvoice is the resolver for the updateInvoice field.
 func (r *invoiceMutationsResolver) UpdateInvoice(ctx context.Context, obj *model.InvoiceMutations, input model.UpdateInvoiceInput) (*model.UpdateInvoicePayload, error) {
-	invoice, err := r.invoicesService.UpdateInvoice(ctx, input)
+	var payerClientID *string
+	sessionPtr := auth.GetSessionPtr(ctx)
+	if sessionPtr != nil {
+		payerClientID = &sessionPtr.ClientID
+	}
+
+	invoice, err := r.invoicesService.UpdateInvoice(ctx, invoicesservice.UpdateInvoiceParams{
+		ID:            input.ID,
+		Chain:         input.Chain,
+		Token:         input.Token,
+		PayerClientID: payerClientID,
+	})
 	if err != nil {
 		return nil, fmt.Errorf("invoicesService.UpdateInvoice: %w", err)
 	}

@@ -315,6 +315,8 @@ func (ec *executionContext) fieldContext_Client_invoices(ctx context.Context, fi
 				return ec.fieldContext_Invoice_address(ctx, field)
 			case "created_at":
 				return ec.fieldContext_Invoice_created_at(ctx, field)
+			case "payer":
+				return ec.fieldContext_Invoice_payer(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Invoice", field.Name)
 		},
@@ -501,6 +503,13 @@ func (ec *executionContext) marshalNClient2ᚖgithubᚗcomᚋfidesyᚑpayᚋfaca
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
 		}
+		return graphql.Null
+	}
+	return ec._Client(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOClient2ᚖgithubᚗcomᚋfidesyᚑpayᚋfacadeᚋpkgᚋclientsᚑserviceᚐClient(ctx context.Context, sel ast.SelectionSet, v *clients_service.Client) graphql.Marshaler {
+	if v == nil {
 		return graphql.Null
 	}
 	return ec._Client(ctx, sel, v)

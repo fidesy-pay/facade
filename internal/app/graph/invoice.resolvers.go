@@ -6,10 +6,12 @@ package graph
 
 import (
 	"context"
+	"github.com/fidesy-pay/facade/internal/pkg/loaders"
 	"time"
 
 	"github.com/fidesy-pay/facade/internal/app/graph/generated"
 	"github.com/fidesy-pay/facade/internal/pkg/model"
+	clients_service "github.com/fidesy-pay/facade/pkg/clients-service"
 	invoices_service "github.com/fidesy-pay/facade/pkg/invoices-service"
 )
 
@@ -36,6 +38,15 @@ func (r *invoiceResolver) CreatedAt(ctx context.Context, obj *invoices_service.I
 	time := obj.CreatedAt.AsTime()
 
 	return &time, nil
+}
+
+// Payer is the resolver for the payer field.
+func (r *invoiceResolver) Payer(ctx context.Context, obj *invoices_service.Invoice) (*clients_service.Client, error) {
+	if obj.PayerClientId == "" {
+		return nil, nil
+	}
+
+	return loaders.For(ctx).ClientByIDLoader.Load(ctx, obj.PayerClientId)
 }
 
 // Invoice returns generated.InvoiceResolver implementation.

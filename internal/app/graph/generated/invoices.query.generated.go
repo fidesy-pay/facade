@@ -80,6 +80,8 @@ func (ec *executionContext) fieldContext_InvoicesPagination_items(ctx context.Co
 				return ec.fieldContext_Invoice_address(ctx, field)
 			case "created_at":
 				return ec.fieldContext_Invoice_created_at(ctx, field)
+			case "payer":
+				return ec.fieldContext_Invoice_payer(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Invoice", field.Name)
 		},

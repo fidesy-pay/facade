@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion7
 const (
 	ClientsService_CreateClient_FullMethodName = "/clients_service.ClientsService/CreateClient"
 	ClientsService_GetClient_FullMethodName    = "/clients_service.ClientsService/GetClient"
+	ClientsService_ListClients_FullMethodName  = "/clients_service.ClientsService/ListClients"
 )
 
 // ClientsServiceClient is the client API for ClientsService service.
@@ -29,6 +30,7 @@ const (
 type ClientsServiceClient interface {
 	CreateClient(ctx context.Context, in *CreateClientRequest, opts ...grpc.CallOption) (*Client, error)
 	GetClient(ctx context.Context, in *GetClientRequest, opts ...grpc.CallOption) (*Client, error)
+	ListClients(ctx context.Context, in *ListClientsRequest, opts ...grpc.CallOption) (*ListClientsResponse, error)
 }
 
 type clientsServiceClient struct {
@@ -57,12 +59,22 @@ func (c *clientsServiceClient) GetClient(ctx context.Context, in *GetClientReque
 	return out, nil
 }
 
+func (c *clientsServiceClient) ListClients(ctx context.Context, in *ListClientsRequest, opts ...grpc.CallOption) (*ListClientsResponse, error) {
+	out := new(ListClientsResponse)
+	err := c.cc.Invoke(ctx, ClientsService_ListClients_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ClientsServiceServer is the server API for ClientsService service.
 // All implementations must embed UnimplementedClientsServiceServer
 // for forward compatibility
 type ClientsServiceServer interface {
 	CreateClient(context.Context, *CreateClientRequest) (*Client, error)
 	GetClient(context.Context, *GetClientRequest) (*Client, error)
+	ListClients(context.Context, *ListClientsRequest) (*ListClientsResponse, error)
 	mustEmbedUnimplementedClientsServiceServer()
 }
 
@@ -75,6 +87,9 @@ func (UnimplementedClientsServiceServer) CreateClient(context.Context, *CreateCl
 }
 func (UnimplementedClientsServiceServer) GetClient(context.Context, *GetClientRequest) (*Client, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetClient not implemented")
+}
+func (UnimplementedClientsServiceServer) ListClients(context.Context, *ListClientsRequest) (*ListClientsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListClients not implemented")
 }
 func (UnimplementedClientsServiceServer) mustEmbedUnimplementedClientsServiceServer() {}
 
@@ -125,6 +140,24 @@ func _ClientsService_GetClient_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ClientsService_ListClients_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListClientsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ClientsServiceServer).ListClients(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ClientsService_ListClients_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ClientsServiceServer).ListClients(ctx, req.(*ListClientsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ClientsService_ServiceDesc is the grpc.ServiceDesc for ClientsService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -139,6 +172,10 @@ var ClientsService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetClient",
 			Handler:    _ClientsService_GetClient_Handler,
+		},
+		{
+			MethodName: "ListClients",
+			Handler:    _ClientsService_ListClients_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
