@@ -57,6 +57,7 @@ type ComplexityRoot struct {
 		CreatedAt func(childComplexity int) int
 		Id        func(childComplexity int) int
 		Invoices  func(childComplexity int) int
+		PhotoUrl  func(childComplexity int) int
 		Username  func(childComplexity int) int
 		Wallets   func(childComplexity int) int
 	}
@@ -197,6 +198,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Client.Invoices(childComplexity), true
+
+	case "Client.photo_url":
+		if e.complexity.Client.PhotoUrl == nil {
+			break
+		}
+
+		return e.complexity.Client.PhotoUrl(childComplexity), true
 
 	case "Client.username":
 		if e.complexity.Client.Username == nil {
@@ -703,6 +711,7 @@ type Mutation`, BuiltIn: false},
     username: String!
     api_key: String!
     created_at: Time!
+    photo_url: String
 
     wallets: [Wallet!]
     invoices: [Invoice]!

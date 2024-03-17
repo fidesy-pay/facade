@@ -21,6 +21,7 @@ import (
 
 type ClientResolver interface {
 	CreatedAt(ctx context.Context, obj *clients_service.Client) (*time.Time, error)
+
 	Wallets(ctx context.Context, obj *clients_service.Client) ([]*crypto_service.Wallet, error)
 	Invoices(ctx context.Context, obj *clients_service.Client) ([]*invoices_service.Invoice, error)
 }
@@ -213,6 +214,47 @@ func (ec *executionContext) fieldContext_Client_created_at(ctx context.Context, 
 	return fc, nil
 }
 
+func (ec *executionContext) _Client_photo_url(ctx context.Context, field graphql.CollectedField, obj *clients_service.Client) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Client_photo_url(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PhotoUrl, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Client_photo_url(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Client",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Client_wallets(ctx context.Context, field graphql.CollectedField, obj *clients_service.Client) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Client_wallets(ctx, field)
 	if err != nil {
@@ -398,6 +440,8 @@ func (ec *executionContext) _Client(ctx context.Context, sel ast.SelectionSet, o
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "photo_url":
+			out.Values[i] = ec._Client_photo_url(ctx, field, obj)
 		case "wallets":
 			field := field
 

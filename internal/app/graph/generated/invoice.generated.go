@@ -435,6 +435,8 @@ func (ec *executionContext) fieldContext_Invoice_payer(ctx context.Context, fiel
 				return ec.fieldContext_Client_api_key(ctx, field)
 			case "created_at":
 				return ec.fieldContext_Client_created_at(ctx, field)
+			case "photo_url":
+				return ec.fieldContext_Client_photo_url(ctx, field)
 			case "wallets":
 				return ec.fieldContext_Client_wallets(ctx, field)
 			case "invoices":

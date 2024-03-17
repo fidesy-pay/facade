@@ -3,6 +3,7 @@ type Client @goModel(model: "github.com/fidesy-pay/facade/pkg/clients-service.Cl
     username: String!
     api_key: String!
     created_at: Time!
+    photo_url: String
 
     wallets: [Wallet!]
     invoices: [Invoice]!

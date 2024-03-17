@@ -6,10 +6,10 @@ package graph
 
 import (
 	"context"
-	"github.com/fidesy-pay/facade/internal/pkg/loaders"
 	"time"
 
 	"github.com/fidesy-pay/facade/internal/app/graph/generated"
+	"github.com/fidesy-pay/facade/internal/pkg/loaders"
 	"github.com/fidesy-pay/facade/internal/pkg/model"
 	clients_service "github.com/fidesy-pay/facade/pkg/clients-service"
 	invoices_service "github.com/fidesy-pay/facade/pkg/invoices-service"
