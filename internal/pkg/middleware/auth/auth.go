@@ -108,6 +108,19 @@ func Auth(authClient auth_service.AuthServiceClient) func(handler http.Handler) 
 				Token: authToken,
 			})
 			if err != nil {
+				if !needAuth(*body.Query) {
+					rw := &CapturingResponseWriter{
+						ResponseWriter: w,
+					}
+
+					r = r.WithContext(ctx)
+
+					next.ServeHTTP(rw, r)
+
+					metrics.ResponseTime.WithLabelValues(*body.OperationName).Observe(float64(time.Since(start).Milliseconds()))
+					return
+				}
+
 				w.WriteHeader(http.StatusUnauthorized)
 				errBody, _ := json.Marshal(map[string]string{"error": err.Error()})
 				w.Write(errBody)
