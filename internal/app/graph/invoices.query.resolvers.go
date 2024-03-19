@@ -17,8 +17,9 @@ import (
 func (r *queryResolver) Invoices(ctx context.Context, filter *model.InvoicesFilter) (*model.InvoicesPagination, error) {
 	session := auth.GetSession(ctx)
 
-	listInvoicesFilter := invoicesservice.ListInvoicesFilter{
-		StatusIn: filter.StatusIn,
+	listInvoicesFilter := invoicesservice.ListInvoicesFilter{}
+	if filter != nil && len(filter.StatusIn) > 0 {
+		listInvoicesFilter.StatusIn = filter.StatusIn
 	}
 
 	if filter != nil && len(filter.IDIn) > 0 {
